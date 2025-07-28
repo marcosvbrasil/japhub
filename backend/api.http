@@ -1,0 +1,90 @@
+### 1. Registrar um novo usuário
+# @name registrarUsuario
+POST http://localhost:8000/api/registro
+Content-Type: application/json
+
+{
+  "email": "teste2@japura.com.br",
+  "senha": "senhaforte123"
+}
+
+###
+### 2. Fazer login de um usuário
+# @name loginUsuario
+POST http://localhost:8000/api/login
+Content-Type: application/json
+
+{
+  "email": "teste@japura.com.br",
+  "senha": "senhaforte123"
+}
+
+### 3. Tentar aceder à rota protegida SEM token (deve falhar)
+# @name testeSemToken
+GET http://localhost:8000/api/teste-protegido
+
+###
+### 4. Tentar aceder à rota protegida COM token (deve funcionar)
+# @name testeComToken
+GET http://localhost:8000/api/teste-protegido
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+### 5. Buscar todos os formulários (precisa de token)
+# @name buscarFormularios
+GET http://localhost:8000/api/formularios
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+###
+### 6. Criar um novo formulário (precisa de token)
+# @name criarFormulario
+POST http://localhost:8000/api/formularios
+Content-Type: application/json
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+{
+  "name": "Formulário de Teste via API",
+  "fields": ["Nome Completo", "Email", "Data de Nascimento"]
+}
+
+###
+### 7. Submeter uma resposta para um formulário específico
+# @name submeterResposta
+POST http://localhost:8000/api/formularios/1/respostas
+Content-Type: application/json
+
+{
+  "data": {
+    "Nome Completo": "Utilizador de Teste",
+    "Email": "teste.api@japura.com.br",
+    "Data de Nascimento": "1990-01-15"
+  }
+}
+
+###
+### 8. Buscar todas as respostas de um formulário (precisa de token)
+# @name buscarRespostas
+GET http://localhost:8000/api/formularios/1/respostas
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+### 9. Testar rota de admin (deve funcionar)
+# @name testeAdmin
+GET http://localhost:8000/api/admin/teste
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+###
+### 11. Admin: Atualizar o role de um utilizador
+# Muda o utilizador com ID = 2 para o role "admin"
+PUT http://localhost:8000/api/admin/usuarios/5
+Content-Type: application/json
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+{
+  "role": "admin"
+}
+
+
+###
+### 12. Admin: Apagar um utilizador
+# Apaga o utilizador com ID = 2
+DELETE http://localhost:8000/api/admin/usuarios/5
+Authorization: Bearer {{loginUsuario.response.body.token}}
