@@ -3,17 +3,14 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faWpforms } from '@fortawesome/free-brands-svg-icons'; // Usando um ícone genérico de formulário
 
 function UserPortalPage({ forms }) {
 
-  // A lógica de agrupamento acontece aqui, dentro de um useMemo para otimização.
   const groupedForms = useMemo(() => {
     if (!forms) return {};
-
-    // Usamos o método 'reduce' para transformar a nossa lista num objeto de categorias
     return forms.reduce((acc, form) => {
-      const category = form.categoria || 'Outros';
+      const category = form.categoria || 'Geral';
       if (!acc[category]) {
         acc[category] = [];
       }
@@ -22,32 +19,39 @@ function UserPortalPage({ forms }) {
     }, {});
   }, [forms]);
 
-  // Pega nos nomes das categorias para podermos iterar sobre eles
   const categories = Object.keys(groupedForms).sort();
 
   return (
-    <div className="table-page-container">
-      <h1>Portal do Utilizador</h1>
-      <p>Selecione um formulário abaixo para começar a preencher.</p>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1>Portal de Formulários</h1>
+          <p>Selecione um formulário abaixo para iniciar um novo processo.</p>
+        </div>
+      </div>
       
-      <div className="user-portal-form-list">
+      {/* O container da nossa lista agora será o menu */}
+      <div className="user-portal-menu-list">
         {!forms || forms.length === 0 ? (
-          <p>Nenhum formulário disponível no momento.</p>
+          <div className="canvas-empty-state">
+            <h3>Nenhum formulário disponível</h3>
+            <p>Contacte um administrador para mais informações.</p>
+          </div>
         ) : (
-          // Agora, mapeamos as nossas 'categorias'
           categories.map(category => (
             <section key={category} className="category-group">
               <h2 className="category-title">{category}</h2>
-              {/* Para cada categoria, mapeamos os formulários que pertencem a ela */}
-              {groupedForms[category].map(form => (
-                <div key={form.id} className="user-form-card">
-                  <span className="user-form-title">{form.name}</span>
-                  <Link to={`/form/${form.id}`} className="action-button">
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                    <span>Preencher</span>
+              {/* O nosso novo menu em grelha */}
+              <div className="menu-grid">
+                {groupedForms[category].map(form => (
+                  <Link to={`/form/${form.id}`} key={form.id} className="menu-card-link">
+                    <div className="menu-card">
+                      <FontAwesomeIcon icon={faWpforms} className="menu-card-icon" />
+                      <span className="menu-card-title">{form.name}</span>
+                    </div>
                   </Link>
-                </div>
-              ))}
+                ))}
+              </div>
             </section>
           ))
         )}

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function UsuariosPage() {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Função para buscar os utilizadores (reutilizável)
+  // Função para buscar os utilizadores da API
   const fetchUsuarios = async () => {
     const token = localStorage.getItem('japhub-token');
     if (!token) {
@@ -17,13 +17,18 @@ function UsuariosPage() {
       return;
     }
     try {
-      setLoading(true);
+      // Não precisamos de setLoading(true) aqui, pois já está no estado inicial
       const response = await axios.get('http://localhost:8000/api/admin/usuarios', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsuarios(response.data);
     } catch (err) {
-        // ... (código de tratamento de erro)
+        if (err.response && err.response.status === 403) {
+            setError("Acesso negado. Apenas administradores podem ver esta página.");
+        } else {
+            setError("Ocorreu um erro ao buscar os utilizadores.");
+        }
+        console.error("Erro ao buscar utilizadores:", err);
     } finally {
       setLoading(false);
     }
@@ -33,8 +38,6 @@ function UsuariosPage() {
   useEffect(() => {
     fetchUsuarios();
   }, []);
-
-  // --- NOSSAS NOVAS FUNÇÕES DE GESTÃO ---
 
   // Função para mudar o role de um utilizador
   const handleRoleChange = async (userId, newRole) => {
@@ -53,7 +56,6 @@ function UsuariosPage() {
 
   // Função para apagar um utilizador
   const handleDeleteUser = async (userId, userEmail) => {
-    // Janela de confirmação para evitar acidentes
     if (!window.confirm(`Tem a certeza de que quer apagar o utilizador ${userEmail}? Esta ação é irreversível.`)) {
         return;
     }
@@ -71,12 +73,27 @@ function UsuariosPage() {
     }
   };
 
-  // ... (código de loading e error)
+  if (loading) {
+    return <div><h1>A carregar utilizadores...</h1></div>;
+  }
+
+  if (error) {
+    return <div><h1 style={{ color: 'red' }}>{error}</h1></div>;
+  }
 
   return (
-    <div className="table-page-container">
-      <h1>Painel de Administração - Utilizadores</h1>
-      <p>Total de utilizadores registados: {usuarios.length}</p>
+    // O div principal já não precisa de classes de layout, pois elas vêm do .page-content
+    <div>
+        <div className="page-header">
+            <div>
+                <h1>Gestão de Utilizadores</h1>
+                <p>Adicione, remova e gira as permissões dos utilizadores da plataforma.</p>
+            </div>
+            <button className="add-user-btn">
+                <FontAwesomeIcon icon={faPlus} />
+                <span>Convidar Utilizador</span>
+            </button>
+        </div>
       
       <table className="data-table">
         <thead>
@@ -85,7 +102,7 @@ function UsuariosPage() {
             <th>Email</th>
             <th>Papel (Role)</th>
             <th>Data de Criação</th>
-            <th>Ações</th> {/* Nova coluna */}
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -94,7 +111,6 @@ function UsuariosPage() {
               <td>{usuario.id}</td>
               <td>{usuario.email}</td>
               <td>
-                {/* Menu dropdown para mudar o role */}
                 <select 
                     value={usuario.role} 
                     onChange={(e) => handleRoleChange(usuario.id, e.target.value)}
@@ -106,7 +122,6 @@ function UsuariosPage() {
               </td>
               <td>{new Date(usuario.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
               <td>
-                {/* Botão para apagar o utilizador */}
                 <button 
                     onClick={() => handleDeleteUser(usuario.id, usuario.email)}
                     className="delete-button"

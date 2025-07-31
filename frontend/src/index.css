@@ -2,6 +2,40 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+/* --- O NOSSO NOVO SISTEMA DE DESIGN --- */
+:root {
+  /* Cores */
+  --cor-primaria: #1e1e1e;
+  --cor-primaria-hover: #333;
+  --cor-texto: #333;
+  --cor-texto-claro: #888;
+  --cor-fundo: #f0f2f5;
+  --cor-branco: #fff;
+  --cor-borda: #e0e0e0;
+  --cor-borda-focada: #ccc;
+  --cor-fundo-hover: #f9f9f9;
+  --cor-perigo: #e53e3e;
+
+  /* Tipografia */
+  --fonte-principal: 'Inter', sans-serif;
+  --fonte-tamanho-base: 16px;
+  --fonte-tamanho-pequeno: 14px;
+  --fonte-tamanho-grande: 18px;
+  --fonte-peso-normal: 500;
+  --fonte-peso-negrito: 600;
+
+  /* Espaçamento */
+  --espacamento-s: 8px;
+  --espacamento-m: 15px;
+  --espacamento-l: 20px;
+  --espacamento-xl: 30px;
+  --espacamento-xxl: 40px;
+
+  /* Outros */
+  --raio-borda: 8px;
+  --sombra-card: 0 2px 8px rgba(0,0,0,0.05);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -9,9 +43,9 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: var(--fonte-principal);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
     -webkit-font-smoothing: antialiased;
 }
 
@@ -22,629 +56,495 @@ body {
 
 .main-content-area {
     flex-grow: 1;
-}
-
-.sidebar {
-    width: 240px;
-    background-color: #1e1e1e;
-    color: #fff;
-    padding: 20px;
     display: flex;
     flex-direction: column;
 }
 
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 240px;
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    padding: var(--espacamento-l);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    flex-shrink: 0;
+}
 .sidebar-header {
     display: flex;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: var(--espacamento-xxl);
 }
-
 .sidebar-header .logo-icon {
     font-size: 24px;
     margin-right: 12px;
 }
-
 .sidebar-header h1 {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: var(--fonte-peso-negrito);
 }
-
+.sidebar-nav {
+    flex-grow: 1;
+}
 .sidebar-nav .nav-item {
     display: flex;
     align-items: center;
     padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
+    margin-bottom: var(--espacamento-s);
+    border-radius: var(--raio-borda);
     text-decoration: none;
     color: #a0a0a0;
-    font-weight: 500;
+    font-weight: var(--fonte-peso-normal);
     transition: background-color 0.3s, color 0.3s;
 }
-
 .sidebar-nav .nav-item:hover {
-    background-color: #333;
-    color: #fff;
+    background-color: var(--cor-primaria-hover);
+    color: var(--cor-branco);
 }
-
-.sidebar-nav .nav-item.active {
-    background-color: #f0f2f5;
-    color: #1e1e1e;
+.sidebar-footer .nav-item {
+    cursor: pointer;
 }
-
 .sidebar-nav .nav-item svg {
-    font-size: 18px;
-    margin-right: 16px;
+    font-size: var(--fonte-tamanho-grande);
+    margin-right: var(--espacamento-m);
     width: 20px;
 }
 
-.main-content {
-    background-color: #fff;
-    height: 100%;
+/* --- NOVA ESTRUTURA DE LAYOUT PRINCIPAL --- */
+
+.page-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ocupa a altura da janela */
+    overflow: hidden; /* Controla o scroll */
 }
 
 .main-header {
+    padding: var(--espacamento-m) var(--espacamento-xxl);
+    border-bottom: 1px solid var(--cor-borda);
+    background-color: var(--cor-branco);
+    flex-shrink: 0; /* Impede que o header encolha */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    border-bottom: 1px solid #e0e0e0;
 }
-
 .main-header .header-logo {
     display: flex;
     align-items: center;
-    color: #1e1e1e;
+    color: var(--cor-texto);
 }
-
 .main-header .logo-icon {
     font-size: 24px;
     margin-right: 12px;
 }
-
 .main-header .header-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: var(--espacamento-l);
     font-size: 20px;
 }
 
-.content-body {
-    display: flex;
-    gap: 30px;
-    padding: 30px 40px;
+.page-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Adiciona scroll apenas ao conteúdo se ele for grande */
+    padding: var(--espacamento-xxl); /* O nosso "espaçamento de respiração" */
+    background-color: var(--cor-fundo); /* Fundo cinza para o conteúdo */
 }
 
+/* --- PÁGINA PRINCIPAL (MAIN CONTENT) --- */
 .form-list-section {
     width: 100%;
-    max-width: 1500px;
+    max-width: 1000px;
     margin: 0 auto;
 }
-
 .btn-create-new {
     width: 100%;
-    padding: 15px;
-    background-color: #f0f2f5;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
+    padding: var(--espacamento-m);
+    background-color: var(--cor-branco);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-base);
+    font-weight: var(--fonte-peso-negrito);
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: var(--espacamento-l);
     transition: background-color 0.3s;
 }
-
 .btn-create-new:hover {
-    background-color: #e0e0e0;
+    background-color: var(--cor-fundo-hover);
 }
-
-.form-card-link {
-    text-decoration: none;
-    color: inherit;
-}
-
-.form-card {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.form-card:hover {
-    border-color: #333;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.form-card span {
-    font-weight: 600;
-}
-
-.form-card small {
-    margin-left: auto;
-    color: #888;
-    margin-right: 20px;
-}
-
-.no-form-selected h3 {
-    font-size: 18px;
-    margin-bottom: 8px;
-}
-
-.table-page-container {
-    padding: 40px;
-    background-color: #fff;
-    height: 100%;
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.data-table th, .data-table td {
-    border: 1px solid #e0e0e0;
-    padding: 12px 15px;
-    text-align: left;
-}
-
-.data-table th {
-    background-color: #f9f9f9;
-    font-weight: 600;
-}
-
-.data-table tbody tr:nth-of-type(even) {
-    background-color: #fdfdfd;
-}
-
-.data-table tbody tr:hover {
-    background-color: #f0f2f5;
-}
-
-/* Estilos para a Página do Construtor de Formulários */
-
-.field-type-item {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
-}
-
-.field-type-item:hover {
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-
-.canvas-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.canvas-header h2 {
-    font-size: 22px;
-}
-
-.publish-btn {
-    background-color: #1e1e1e;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.form-area {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    min-height: 400px;
-}
-
-.form-area p {
-    color: #888;
-    text-align: center;
-    font-size: 16px;
-}
-
-/* Estilos para os campos na pré-visualização do construtor */
-
-.form-field-preview {
-    background-color: #f9f9f9;
-    border: 1px dashed #ccc;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 15px;
-    position: relative; 
-}
-
-.form-field-preview label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
-/* Estilo para o input de edição do label */
-.field-label-input {
-    width: 100%;
-    font-size: 16px;
-    font-weight: 500;
-    padding: 4px 8px;
-    border: 1px solid #333;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    font-family: 'Inter', sans-serif;
-}
-
-/* Estilos para o ícone de apagar campo */
-
-.form-field-preview {
-    /* Adiciona esta linha para que o ícone possa ser posicionado em relação a este container */
-    
-}
-
-.delete-field-icon {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 16px;
-    transition: color 0.2s;
-}
-
-.delete-field-icon:hover {
-    color: #e53e3e; /* Vermelho ao passar o rato */
-}
-
-/* Estilos para o novo layout do form-card */
-
-.form-card {
-    /* Esta linha já existe, mas certifica-te que o display é flex */
-    display: flex;
-    justify-content: space-between; /* Adiciona esta linha */
-    align-items: center;
-}
-
-.form-card-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-card-actions {
-    display: flex;
-    gap: 20px;
-}
-
-.form-card-actions a {
-    color: #888;
-    font-size: 18px;
-    transition: color 0.2s;
-}
-
-.form-card-actions a:hover {
-    color: #1e1e1e;
-}
-
-/* Estilos para a Página de Submissão */
-
-.submission-page-container {
-    padding: 40px;
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    height: 100%;
-}
-
-.form-submission-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 600px;
-}
-
-.form-submission-header {
-    padding: 20px 30px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.form-submission-header h2 {
-    font-size: 24px;
-    margin-bottom: 4px;
-}
-
-.form-submission-header p {
-    color: #888;
-}
-
-.submission-form {
-    padding: 30px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.submit-btn {
-    width: 100%;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #1e1e1e;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-/* Estilos para a Página de Login */
-
-.login-page-container {
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Inter', sans-serif;
-}
-
-.login-card {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 400px;
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.login-header h2 {
-    font-size: 28px;
-    margin-bottom: 8px;
-}
-
-.login-header p {
-    color: #888;
-}
-
-/* Reutiliza os estilos de formulário que já tínhamos */
-.login-form .form-group {
-    margin-bottom: 20px;
-}
-.login-form .submit-btn {
-    margin-top: 10px;
-}
-
-/* Estilos para o rodapé da Sidebar (Logout) */
-
-.sidebar {
-    /* Estas 3 linhas já devem existir, mas confirma que o display é flex e a direction é column */
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Garante que a sidebar ocupa a altura toda */
-}
-
-.sidebar-nav {
-    flex-grow: 1; /* Faz a navegação principal ocupar o espaço disponível, empurrando o rodapé para baixo */
-}
-
-.sidebar-footer .nav-item {
-    cursor: pointer;
-}
-
-/* Estilos para a Barra de Busca */
-.search-bar-container {
-    margin-bottom: 20px;
-}
-.search-input {
-    width: 100%;
-    max-width: 400px;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-/* Estilos para os controlos de filtro */
-.controls-container {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    align-items: center;
-}
-
-.filter-select {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    background-color: #fff;
-}
-
-/* Estilos para o Editor de Título do Formulário */
-.form-title-container {
-    margin-bottom: 20px;
-}
-
-.form-title-input {
-    width: 100%;
-    font-size: 24px;
-    font-weight: 600;
-    padding: 10px;
-    border: none;
-    border-bottom: 2px solid #ccc;
-    background-color: transparent;
-    transition: border-color 0.2s;
-}
-
-.form-title-input:focus {
-    outline: none;
-    border-bottom-color: #1e1e1e;
-}
-
-/* Estilos para os Controlos do Workspace */
 .workspace-controls {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    gap: 15px;
+    margin-bottom: var(--espacamento-l);
+    gap: var(--espacamento-m);
 }
-.workspace-controls .search-input {
-    max-width: none; /* Remove a limitação de largura que tinha antes */
-    flex-grow: 1;
+.search-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--cor-borda-focada);
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-base);
 }
-
-/* Estilos para os Botões de Ação nos Cards */
-
-.form-card-actions {
-    /* Estas duas linhas já devem existir, mas confirma */
+.filter-select {
+    padding: 10px 15px;
+    border: 1px solid var(--cor-borda-focada);
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-base);
+    background-color: var(--cor-branco);
+}
+.form-card {
     display: flex;
-    gap: 10px; /* Reduz um pouco o espaçamento */
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--espacamento-l);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    margin-bottom: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: var(--cor-branco);
 }
-
-/* Remove a formatação padrão do link */
-.form-card-actions a {
-    text-decoration: none;
+.form-card:hover {
+    border-color: var(--cor-primaria-hover);
+    box-shadow: var(--sombra-card);
 }
-
+.form-card-info span {
+    font-weight: var(--fonte-peso-negrito);
+    font-size: var(--fonte-tamanho-grande);
+}
+.form-card-info small {
+    margin-top: 4px;
+    color: var(--cor-texto-claro);
+}
 .action-button {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espaçamento entre o ícone e o texto */
-    padding: 8px 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    color: #333;
-    font-weight: 500;
-    font-size: 14px;
-    background-color: #f9f9f9;
+    gap: var(--espacamento-s);
+    padding: var(--espacamento-s) 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    color: var(--cor-texto);
+    font-weight: var(--fonte-peso-normal);
+    font-size: var(--fonte-tamanho-pequeno);
+    background-color: var(--cor-fundo-hover);
     transition: background-color 0.2s, box-shadow 0.2s;
+    text-decoration: none;
 }
-
 .action-button:hover {
-    background-color: #f0f2f5;
+    background-color: var(--cor-fundo);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* Estilos para o Drag and Drop */
-.drag-handle {
-    cursor: grab;
-    padding-right: 15px;
-    font-size: 20px;
-    color: #ccc;
+/* --- CONSTRUTOR DE FORMULÁRIOS (FORM BUILDER) --- */
+.builder-page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--cor-fundo);
 }
-.form-field-preview {
-    /* Garante que os elementos dentro fiquem alinhados */
+.builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px var(--espacamento-l);
+    background-color: var(--cor-branco);
+    border-bottom: 1px solid var(--cor-borda);
+    flex-shrink: 0;
+}
+.builder-header-left {
     display: flex;
     align-items: center;
+    gap: var(--espacamento-m);
 }
-.field-content {
-    flex-grow: 1; /* Faz o conteúdo do campo ocupar o espaço restante */
-}
-
-/* Estilos para o novo botão de exportação */
-.export-button {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Espaçamento entre o ícone e o texto */
-    padding: 10px 15px;
-    background-color: #1e1e1e; /* Cor primária, escura */
-    color: #fff;
+.form-title-input-header {
+    font-size: var(--fonte-tamanho-grande);
+    font-weight: var(--fonte-peso-negrito);
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none; /* Remove o sublinhado do link */
-    transition: background-color 0.2s, transform 0.2s;
-    margin-left: auto; /* Mágica: empurra o botão para a direita */
+    padding: var(--espacamento-s);
+    border-radius: 4px;
+}
+.form-title-input-header:focus {
+    outline: none;
+    background-color: var(--cor-fundo);
+}
+.category-select-header {
+    font-size: var(--fonte-tamanho-pequeno);
+    padding: var(--espacamento-s);
+    border: 1px solid var(--cor-borda-focada);
+    border-radius: 4px;
+    background-color: var(--cor-fundo-hover);
+}
+.publish-btn {
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    border: none;
+    padding: 10px var(--espacamento-l);
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-base);
+    font-weight: var(--fonte-peso-negrito);
     cursor: pointer;
 }
-
-.export-button:hover {
-    background-color: #333;
-    transform: translateY(-1px); /* Leve efeito de elevação */
+.publish-btn:hover {
+    background-color: var(--cor-primaria-hover);
 }
-
-/* Garante que o container dos controlos alinha os itens verticalmente */
-.controls-container {
+.builder-main-content {
     display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    align-items: center; /* Adiciona/confirma esta linha */
+    flex-grow: 1;
+    overflow: hidden;
 }
-
-/* Estilos para os controlos da página de admin */
-.role-select {
-    padding: 5px 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+.builder-sidebar-left {
+    width: 280px;
+    background-color: var(--cor-branco);
+    padding: var(--espacamento-l);
+    border-right: 1px solid var(--cor-borda);
+    flex-shrink: 0;
+    overflow-y: auto;
 }
-.delete-button {
+.builder-sidebar-left h3 {
+    font-size: var(--fonte-tamanho-base);
+    margin-bottom: var(--espacamento-m);
+    color: #555;
+}
+.field-type-item {
+    background-color: var(--cor-fundo-hover);
+    border: 1px solid var(--cor-borda);
+    padding: var(--espacamento-m);
+    margin-bottom: 10px;
+    border-radius: var(--raio-borda);
+    font-weight: var(--fonte-peso-normal);
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+.field-type-item:hover {
+    background-color: var(--cor-branco);
+    box-shadow: var(--sombra-card);
+}
+.builder-canvas-center {
+    flex-grow: 1;
+    padding: var(--espacamento-xxl);
+    overflow-y: auto;
+}
+.canvas-empty-state {
+    text-align: center;
+    padding: 80px var(--espacamento-xxl);
+    border: 2px dashed var(--cor-borda-focada);
+    border-radius: var(--raio-borda);
+    color: var(--cor-texto-claro);
+}
+.canvas-empty-state h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.form-field-preview {
+    background-color: var(--cor-fundo-hover);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    padding: var(--espacamento-l);
+    margin-bottom: var(--espacamento-m);
+    position: relative; 
+    display: flex;
+    align-items: center;
+}
+.form-field-preview label {
+    display: block;
+    font-weight: var(--fonte-peso-normal);
+    margin-bottom: var(--espacamento-s);
+}
+.drag-handle {
+    cursor: grab;
+    padding-right: var(--espacamento-m);
+    font-size: 20px;
+    color: var(--cor-borda-focada);
+}
+.field-content {
+    flex-grow: 1;
+}
+.edit-field-btn {
     background: none;
     border: none;
     color: #aaa;
     cursor: pointer;
-    font-size: 16px;
+    font-size: var(--fonte-tamanho-base);
+    margin-left: auto;
+    padding: 5px 10px;
 }
-.delete-button:hover {
-    color: #e53e3e;
+.edit-field-btn:hover {
+    color: var(--cor-primaria);
+}
+.field-input,
+textarea.field-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-borda-focada);
+    border-radius: 4px;
+    background-color: var(--cor-fundo);
+    margin-top: 5px;
+    font-family: inherit; 
+    font-size: inherit;
 }
 
-/* Estilos para o Painel de Propriedades */
-.properties-panel {
-    margin-top: 30px;
-    padding-top: 20px;
+/* --- PAINEL DE PROPRIEDADES --- */
+.properties-panel-right {
+    width: 320px;
+    background-color: var(--cor-branco);
+    border-left: 1px solid var(--cor-borda);
+    flex-shrink: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
-.properties-panel h3 {
-    margin-bottom: 15px;
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--espacamento-l);
+    border-bottom: 1px solid var(--cor-borda);
+    flex-shrink: 0;
 }
-.properties-panel p {
-    font-size: 14px;
-    margin-bottom: 20px;
-    word-break: break-word;
+.panel-header h3 {
+    font-size: var(--fonte-tamanho-grande);
+}
+.close-panel-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--cor-texto-claro);
+}
+.panel-content {
+    padding: var(--espacamento-l);
+    flex-grow: 1;
 }
 .property-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: var(--espacamento-m);
+}
+.property-item label {
+    font-weight: var(--fonte-peso-normal);
+}
+.property-input {
+    width: 100%;
+    padding: var(--espacamento-s);
+    border-radius: 4px;
+    border: 1px solid var(--cor-borda-focada);
+    margin-top: 5px;
+    font-size: var(--fonte-tamanho-pequeno);
+}
+.panel-footer {
+    padding: var(--espacamento-l);
+    border-top: 1px solid var(--cor-borda);
+    flex-shrink: 0;
+}
+.delete-button-panel {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-perigo);
+    color: var(--cor-perigo);
+    background-color: var(--cor-branco);
+    border-radius: var(--raio-borda);
+    font-weight: var(--fonte-peso-negrito);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacamento-s);
+}
+.delete-button-panel:hover {
+    background-color: var(--cor-perigo);
+    color: var(--cor-branco);
+}
+.divider {
+    border: none;
+    border-top: 1px solid var(--cor-borda);
+    margin: var(--espacamento-l) 0;
 }
 
-/* Estilos para o "interruptor" (toggle switch) */
+/* --- CAMPOS ESPECÍFICOS (RADIO, ETC) --- */
+.radio-options-container, .radio-options-container-submission {
+    margin-top: var(--espacamento-s);
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
+    padding: var(--espacamento-m);
+    background-color: var(--cor-fundo);
+}
+.radio-option-item, 
+.radio-option-item-submission {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.radio-option-item:last-child, 
+.radio-option-item-submission:last-child {
+    margin-bottom: 0;
+}
+.radio-option-item input[type="radio"],
+.radio-option-item-submission input[type="radio"] {
+    width: auto;
+    height: auto;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+.radio-option-item label,
+.radio-option-item-submission label {
+    font-weight: var(--fonte-peso-normal);
+}
+.radio-no-options-text {
+    color: var(--cor-texto-claro);
+    font-style: italic;
+}
+
+/* --- PAINEL DE PROPRIEDADES (EDITOR DE OPÇÕES) --- */
+.property-item-options {
+    margin-top: var(--espacamento-l);
+}
+.property-item-options > label { /* Apenas o label principal */
+    display: block;
+    font-weight: var(--fonte-peso-normal);
+    margin-bottom: var(--espacamento-s);
+}
+.option-editor-item {
+    display: flex;
+    align-items: center;
+    gap: var(--espacamento-s);
+    margin-bottom: var(--espacamento-s);
+}
+.option-editor-item input {
+    flex-grow: 1;
+    padding: var(--espacamento-s);
+    border: 1px solid var(--cor-borda-focada);
+    border-radius: 4px;
+}
+.option-editor-item button {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+}
+.option-editor-item button:hover {
+    color: var(--cor-perigo);
+}
+.add-option-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: var(--espacamento-s);
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: var(--fonte-peso-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacamento-s);
+}
+.add-option-btn:hover {
+    background-color: var(--cor-borda);
+}
+
+/* --- INTERRUPTOR (TOGGLE SWITCH) --- */
 .switch {
   position: relative;
   display: inline-block;
@@ -663,7 +563,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--cor-borda-focada);
   transition: .4s;
 }
 .slider:before {
@@ -677,7 +577,7 @@ body {
   transition: .4s;
 }
 input:checked + .slider {
-  background-color: #2c3e50;
+  background-color: var(--cor-primaria);
 }
 input:checked + .slider:before {
   transform: translateX(22px);
@@ -689,353 +589,192 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-/* Estilos para o novo Painel de Propriedades à Direita */
-.properties-panel-right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 320px;
-    height: 100%;
-    background-color: #fff;
-    border-left: 1px solid #e0e0e0;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-}
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
-}
-.panel-header h3 {
-    font-size: 18px;
-}
-.close-panel-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #888;
-}
-.panel-content {
-    padding: 20px;
-    flex-grow: 1;
-}
-.property-input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-top: 5px;
-}
-.panel-footer {
-    padding: 20px;
-    border-top: 1px solid #e0e0e0;
-}
-.delete-button-panel {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #e53e3e;
-    color: #e53e3e;
-    background-color: #fff;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.delete-button-panel:hover {
-    background-color: #e53e3e;
-    color: #fff;
-}
+/* --- ESTILOS PARA O PORTAL DO UTILIZADOR (Refatorado) --- */
 
-/* Ajustes no SortableField */
-.edit-field-btn {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: auto;
-    padding: 5px 10px;
-}
-.edit-field-btn:hover {
-    color: #1e1e1e;
-}
-
-/* --- ESTILOS DO NOVO FORM BUILDER --- */
-
-.builder-page-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Ocupa a altura da área de conteúdo */
-    background-color: #f0f2f5;
-}
-
-.builder-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #fff;
-    border-bottom: 1px solid #e0e0e0;
-    flex-shrink: 0;
-}
-
-.form-title-input-header {
-    font-size: 18px;
-    font-weight: 600;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-}
-.form-title-input-header:focus {
-    outline: none;
-    background-color: #f0f2f5;
-}
-
-.builder-main-content {
-    display: flex;
-    flex-grow: 1;
-    overflow: hidden; /* Evita barras de scroll desnecessárias */
-}
-
-.builder-sidebar-left {
-    width: 280px;
-    background-color: #fff;
-    padding: 20px;
-    border-right: 1px solid #e0e0e0;
-    flex-shrink: 0;
-    overflow-y: auto;
-}
-.builder-sidebar-left h3 {
-    font-size: 16px;
-    margin-bottom: 15px;
-    color: #555;
-}
-
-/* Reutiliza o estilo de .field-type-item que já tínhamos */
-
-.builder-canvas-center {
-    flex-grow: 1;
-    padding: 40px;
-    overflow-y: auto; /* Permite scroll se o formulário for muito grande */
-}
-
-.canvas-empty-state {
-    text-align: center;
-    padding: 80px 40px;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    color: #888;
-}
-.canvas-empty-state h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-/* O .properties-panel-right continua como estava, mas agora ele é um irmão do .builder-canvas-center */
-.properties-panel-right {
-    width: 320px;
-    background-color: #fff;
-    border-left: 1px solid #e0e0e0;
-    flex-shrink: 0;
-    overflow-y: auto;
-}
-
-.field-input,
-textarea.field-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f0f2f5;
-    margin-top: 5px;
-    font-family: inherit; 
-    font-size: inherit;
-}
-
-.radio-placeholder {
-    padding: 10px;
-    border: 1px dashed #ccc;
-    border-radius: 4px;
-    color: #888;
-    margin-top: 5px;
-    text-align: center;
-}
-
-/* Estilos para o Editor de Opções no Painel de Propriedades */
-.property-item-options {
-    margin-top: 20px;
-}
-.property-item-options label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-.option-editor-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-.option-editor-item input {
-    flex-grow: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.option-editor-item button {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-}
-.option-editor-item button:hover {
-    color: #e53e3e;
-}
-.add-option-btn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 8px;
-    background-color: #f0f2f5;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.add-option-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.divider {
-    border: none;
-    border-top: 1px solid #e0e0e0;
-    margin: 20px 0;
-}
-
-/* Estilos para as Opções de Rádio (Pré-visualização e Submissão) */
-.radio-options-container, .radio-options-container-submission {
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 15px;
-    background-color: #f9f9f9;
-}
-
-
-/* Remove a margem do último item para um espaçamento perfeito */
-.radio-option-item:last-child, .radio-option-item-submission:last-child {
-    margin-bottom: 0;
-}
-
-/* Estilos unificados para as opções de rádio */
-
-/* Aplica a base de alinhamento para ambos os contextos */
-.radio-option-item, 
-.radio-option-item-submission {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-/* Garante que os inputs de rádio não se estiquem em nenhum dos contextos */
-.radio-option-item input[type="radio"],
-.radio-option-item-submission input[type="radio"] {
-    width: auto; /* Deixa o navegador definir a largura */
-    height: auto; /* Deixa o navegador definir a altura */
-    margin-right: 10px;
-    flex-shrink: 0;
-}
-
-/* Garante que o texto da opção não fique em negrito */
-.radio-option-item label,
-.radio-option-item-submission label {
-    font-weight: normal;
-}
-/* Texto de placeholder na pré-visualização do construtor */
-.radio-no-options-text {
-    color: #888;
-    font-style: italic;
-}
-
-/* Estilos para o Portal do Utilizador */
 .user-portal-form-list {
-    margin-top: 30px;
-    display: grid;
-    gap: 15px;
-}
-
-.user-form-card {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.user-form-title {
-    font-weight: 600;
-    font-size: 18px;
-}
-
-/* Estilos para o Seletor de Categoria no Header */
-
-.builder-header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.category-select-header {
-    font-size: 14px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-}
-
-/* Estilos para o Portal do Utilizador */
-.user-portal-form-list {
-    margin-top: 30px;
+    margin-top: var(--espacamento-xl);
 }
 
 .category-group {
-    margin-bottom: 30px;
+    margin-bottom: var(--espacamento-xxl);
 }
 
 .category-title {
     font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 15px;
+    font-weight: var(--fonte-peso-negrito);
+    margin-bottom: var(--espacamento-m);
     padding-bottom: 10px;
-    border-bottom: 2px solid #f0f2f5;
+    border-bottom: 2px solid var(--cor-fundo);
+    color: var(--cor-primaria);
 }
 
 .user-form-card {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
+    background-color: var(--cor-branco);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    padding: var(--espacamento-l);
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    margin-bottom: 10px;
+    margin-bottom: var(--espacamento-m);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-form-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .user-form-title {
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: var(--fonte-peso-negrito);
+    font-size: var(--fonte-tamanho-grande);
+    color: var(--cor-texto);
+}
+
+/* --- PÁGINA DE ADMIN --- */
+.role-select {
+    padding: 5px var(--espacamento-s);
+    border-radius: 4px;
+    border: 1px solid var(--cor-borda-focada);
+}
+.delete-button {
+    background: none;
+    border: none;
+    color: var(--cor-texto-claro);
+    cursor: pointer;
+    font-size: var(--fonte-tamanho-base);
+}
+.delete-button:hover {
+    color: var(--cor-perigo);
+}
+
+/* --- NOVA ESTRUTURA DE LAYOUT PRINCIPAL --- */
+
+.page-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ocupa a altura da janela */
+    overflow: hidden; /* Controla o scroll */
+}
+
+.main-header {
+    padding: var(--espacamento-m) var(--espacamento-xxl);
+    border-bottom: 1px solid var(--cor-borda);
+    background-color: var(--cor-branco);
+    flex-shrink: 0; /* Impede que o header encolha */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main-header .header-logo {
+    display: flex;
+    align-items: center;
+    color: var(--cor-texto);
+}
+.main-header .logo-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+.main-header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--espacamento-l);
+    font-size: 20px;
+}
+
+.page-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Adiciona scroll apenas ao conteúdo se ele for grande */
+    padding: var(--espacamento-xxl); /* O nosso "espaçamento de respiração" */
+}
+
+/* --- ESTILOS PARA O CABEÇALHO DE PÁGINA (ADMIN, ETC) --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--espacamento-xl);
+}
+
+.page-header h1 {
+    font-size: 28px;
+    font-weight: var(--fonte-peso-negrito);
+    color: var(--cor-primaria);
+}
+
+.page-header p {
+    font-size: var(--fonte-tamanho-base);
+    color: var(--cor-texto-claro);
+    margin-top: var(--espacamento-s);
+}
+
+.add-user-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--espacamento-s);
+    padding: 10px var(--espacamento-m);
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    border: none;
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-pequeno);
+    font-weight: var(--fonte-peso-negrito);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-user-btn:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+/* --- ESTILOS PARA O MENU DO PORTAL DO UTILIZADOR --- */
+
+.user-portal-menu-list {
+    margin-top: var(--espacamento-l);
+}
+
+.menu-grid {
+    display: grid;
+    /* Cria uma grelha com colunas que se ajustam ao tamanho do ecrã */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--espacamento-l);
+}
+
+.menu-card-link {
+    text-decoration: none;
+    color: var(--cor-texto);
+}
+
+.menu-card {
+    background-color: var(--cor-branco);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    padding: var(--espacamento-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 180px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--sombra-card);
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    border-color: var(--cor-primaria);
+}
+
+.menu-card-icon {
+    font-size: 40px;
+    color: var(--cor-primaria);
+    margin-bottom: var(--espacamento-m);
+}
+
+.menu-card-title {
+    font-weight: var(--fonte-peso-negrito);
+    font-size: var(--fonte-tamanho-base);
 }
