@@ -88,3 +88,15 @@ Authorization: Bearer {{loginUsuario.response.body.token}}
 # Apaga o utilizador com ID = 2
 DELETE http://localhost:8000/api/admin/usuarios/5
 Authorization: Bearer {{loginUsuario.response.body.token}}
+
+###
+### Gerar um URL de Upload Assinado (precisa de token)
+# @name gerarUrlUpload
+POST http://localhost:8000/api/uploads/assinar-url
+Content-Type: application/json
+Authorization: Bearer {{loginUsuario.response.body.token}}
+
+{
+  "fileName": "documento_teste.pdf",
+  "fileType": "application/pdf"
+}

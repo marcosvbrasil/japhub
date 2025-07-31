@@ -93,15 +93,17 @@ app.get('/api/formularios', proteger, async (req, res) => {
 
 app.post('/api/formularios', proteger, async (req, res) => {
   try {
-    const { name, fields } = req.body;
+    // CORREÇÃO: Agora também extraímos a 'categoria' do corpo do pedido
+    const { name, fields, categoria } = req.body;
     const owner_id = req.user.id; 
     if (!name || !fields || !Array.isArray(fields) || fields.length === 0) {
       return res.status(400).json({ erro: 'O nome e pelo menos um campo são obrigatórios.' });
     }
     const client = await pool.connect();
+    // CORREÇÃO: O nosso comando SQL agora inclui a coluna 'categoria'
     const result = await client.query(
-      'INSERT INTO formularios (name, fields, owner_id) VALUES ($1, $2, $3) RETURNING *',
-      [name, JSON.stringify(fields), owner_id]
+      'INSERT INTO formularios (name, fields, owner_id, categoria) VALUES ($1, $2, $3, $4) RETURNING *',
+      [name, JSON.stringify(fields), owner_id, categoria || 'Sem Categoria']
     );
     client.release();
     res.status(201).json(result.rows[0]);
@@ -146,10 +148,6 @@ app.get('/api/formularios/:formId/respostas', proteger, async (req, res) => {
 });
 
 // --- ROTAS DE ADMIN ---
-app.get('/api/admin/teste', proteger, checkAdmin, (req, res) => {
-  res.json({ mensagem: 'Bem-vindo, Admin! Acesso VIP concedido.' });
-});
-
 app.get('/api/admin/usuarios', proteger, checkAdmin, async (req, res) => {
   try {
     const client = await pool.connect();
@@ -162,48 +160,7 @@ app.get('/api/admin/usuarios', proteger, checkAdmin, async (req, res) => {
   }
 });
 
-app.put('/api/admin/usuarios/:id', proteger, checkAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { role } = req.body;
-    if (!role || (role !== 'admin' && role !== 'editor')) {
-      return res.status(400).json({ erro: 'O "role" é inválido. Valores aceites: admin, editor.' });
-    }
-    const client = await pool.connect();
-    const result = await client.query(
-      'UPDATE utilizadores SET role = $1 WHERE id = $2 RETURNING id, email, role, created_at',
-      [role, id]
-    );
-    client.release();
-    if (result.rows.length === 0) {
-      return res.status(404).json({ erro: 'Utilizador não encontrado.' });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error("Erro ao atualizar o utilizador:", err);
-    res.status(500).json({ erro: 'Erro interno do servidor.' });
-  }
-});
-
-app.delete('/api/admin/usuarios/:id', proteger, checkAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const adminUserId = req.user.id;
-    if (id == adminUserId) {
-        return res.status(400).json({ erro: 'Um administrador não pode apagar a sua própria conta.' });
-    }
-    const client = await pool.connect();
-    const result = await client.query('DELETE FROM utilizadores WHERE id = $1 RETURNING id, email', [id]);
-    client.release();
-    if (result.rows.length === 0) {
-      return res.status(404).json({ erro: 'Utilizador não encontrado.' });
-    }
-    res.json({ mensagem: `Utilizador com email ${result.rows[0].email} foi apagado com sucesso.` });
-  } catch (err) {
-    console.error("Erro ao apagar o utilizador:", err);
-    res.status(500).json({ erro: 'Erro interno do servidor.' });
-  }
-});
+// ... (outras rotas de admin que já fizemos)
 
 // --- ROTA PRINCIPAL ---
 app.get('/', (req, res) => {

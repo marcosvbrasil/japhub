@@ -966,3 +966,76 @@ textarea.field-input {
     color: #888;
     font-style: italic;
 }
+
+/* Estilos para o Portal do Utilizador */
+.user-portal-form-list {
+    margin-top: 30px;
+    display: grid;
+    gap: 15px;
+}
+
+.user-form-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.user-form-title {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* Estilos para o Seletor de Categoria no Header */
+
+.builder-header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.category-select-header {
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* Estilos para o Portal do Utilizador */
+.user-portal-form-list {
+    margin-top: 30px;
+}
+
+.category-group {
+    margin-bottom: 30px;
+}
+
+.category-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.user-form-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 10px;
+}
+
+.user-form-title {
+    font-weight: 600;
+    font-size: 18px;
+}

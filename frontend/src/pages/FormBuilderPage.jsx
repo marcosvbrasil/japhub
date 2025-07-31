@@ -2,23 +2,24 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-
-// Importa os nossos componentes personalizados
 import { SortableField } from '../components/SortableField';
 import { PropertiesPanel } from '../components/PropertiesPanel';
 
 const availableFields = [
     { id: 'text', label: 'Texto Curto' },
     { id: 'textarea', label: 'Texto Longo' },
+    { id: 'radio', label: 'Escolha Única' },
+    { id: 'email', label: 'Email' },
     { id: 'date', label: 'Data' },
     { id: 'signature', label: 'Assinatura' },
-    { id: 'table', label: 'Tabela' },
-    { id: 'radio', label: 'Escolha Única' },
 ];
+
+const availableCategories = ['Logística', 'Comercial', 'Financeiro', 'RH', 'Operações'];
 
 function FormBuilderPage({ onSaveForm }) {
     const [formFields, setFormFields] = useState([]);
-    const [formTitle, setFormTitle] = useState(''); // Começa vazio para o placeholder funcionar
+    const [formTitle, setFormTitle] = useState('');
+    const [formCategory, setFormCategory] = useState('');
     const [selectedFieldId, setSelectedFieldId] = useState(null);
     const navigate = useNavigate();
     
@@ -34,7 +35,6 @@ function FormBuilderPage({ onSaveForm }) {
             label: `Novo campo de ${fieldType.label}`,
             required: false,
             placeholder: '',
-            // Adicionamos a propriedade 'options' se o tipo for 'radio'
             ...(fieldType.id === 'radio' && { options: [{ id: Date.now(), label: 'Opção 1' }] })
         };
         setFormFields((fields) => [...fields, newField]);
@@ -62,10 +62,15 @@ function FormBuilderPage({ onSaveForm }) {
             alert("Adicione pelo menos um campo antes de publicar!");
             return;
         }
+        
+        // CORREÇÃO: Garante que a categoria está no payload
         const newFormPayload = {
             name: formTitle,
             fields: formFields,
+            categoria: formCategory,
         };
+        
+        // Chama a função "chefe" (addForm do App.jsx) para fazer o trabalho pesado
         onSaveForm(newFormPayload);
     };
 
@@ -91,6 +96,16 @@ function FormBuilderPage({ onSaveForm }) {
                         placeholder="Formulário Sem Título"
                         className="form-title-input-header"
                     />
+                    <select
+                        value={formCategory}
+                        onChange={(e) => setFormCategory(e.target.value)}
+                        className="category-select-header"
+                    >
+                        <option value="">Sem Categoria</option>
+                        {availableCategories.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
                 </div>
                 <div className="builder-header-right">
                     <button className="publish-btn" onClick={handlePublish}>Publicar</button>
