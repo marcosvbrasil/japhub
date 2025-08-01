@@ -1,38 +1,30 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimes, faPlus, faMousePointer } from '@fortawesome/free-solid-svg-icons';
 
-// --- Sub-componente para editar as opções do campo de Escolha Única ---
-// Foi criado aqui dentro para manter o código organizado, mas poderia ser um ficheiro separado.
+// --- Sub-componente para editar as opções (sem alterações) ---
 const RadioOptionsEditor = ({ field, onUpdateProperty }) => {
     
-    // Função para lidar com a mudança no texto de uma opção
     const handleOptionChange = (optionId, newLabel) => {
-        // Cria um novo array de opções, atualizando apenas a que foi modificada
         const newOptions = field.options.map(opt => 
             opt.id === optionId ? { ...opt, label: newLabel } : opt
         );
-        // Chama a função "chefe" para atualizar o estado no FormBuilderPage
         onUpdateProperty(field.id, 'options', newOptions);
     };
 
-    // Função para adicionar uma nova opção à lista
     const addOption = () => {
         const newOption = { id: Date.now(), label: `Opção ${field.options.length + 1}` };
-        // Cria um novo array com as opções antigas mais a nova
         const newOptions = [...field.options, newOption];
         onUpdateProperty(field.id, 'options', newOptions);
     };
 
-    // Função para apagar uma opção da lista
     const deleteOption = (optionId) => {
-        // Cria um novo array contendo apenas as opções cujo ID não corresponde ao que queremos apagar
         const newOptions = field.options.filter(opt => opt.id !== optionId);
         onUpdateProperty(field.id, 'options', newOptions);
     };
 
     return (
         <div className="property-item-options">
-            <label>Opções de Escolha</label>
+            {/* O label foi movido para o componente principal para consistência */ }
             {field.options.map((option) => (
                 <div key={option.id} className="option-editor-item">
                     <input 
@@ -54,12 +46,19 @@ const RadioOptionsEditor = ({ field, onUpdateProperty }) => {
     );
 };
 
-
-// --- Componente Principal do Painel de Propriedades ---
+// --- Componente Principal do Painel de Propriedades (Reestruturado) ---
 export function PropertiesPanel({ field, onUpdateProperty, onDelete, onClose }) {
-  // Se nenhum campo estiver selecionado, não renderiza nada.
+  
   if (!field) {
-      return null;
+      return (
+        <aside className="properties-panel-right">
+            <div className="panel-content-empty">
+                <FontAwesomeIcon icon={faMousePointer} style={{ fontSize: '32px', color: '#ccc', marginBottom: '16px' }}/>
+                <h3>Nenhum Campo Selecionado</h3>
+                <p>Clique num campo no painel central para editar as suas propriedades aqui.</p>
+            </div>
+        </aside>
+      );
   }
 
   return (
@@ -72,42 +71,61 @@ export function PropertiesPanel({ field, onUpdateProperty, onDelete, onClose }) 
       </div>
 
       <div className="panel-content">
-        {/* Editor do Nome/Label do Campo */}
-        <div className="property-item">
-          <label htmlFor="label-input">Texto da Pergunta</label>
-          <input 
-            id="label-input"
-            type="text" 
-            className="property-input"
-            value={field.label}
-            onChange={(e) => onUpdateProperty(field.id, 'label', e.target.value)}
-          />
-        </div>
-
-        {/* Interruptor de Campo Obrigatório */}
-        <div className="property-item">
-          <label htmlFor="required-toggle">Obrigatório</label>
-          <label className="switch">
+        {/* --- SECÇÃO "GERAL" --- */}
+        <div className="panel-section">
+          <h4 className="panel-section-title">Geral</h4>
+          <div className="property-item">
+            <label htmlFor="label-input">Texto da Pergunta</label>
             <input 
-                id="required-toggle"
-                type="checkbox" 
-                checked={field.required}
-                onChange={(e) => onUpdateProperty(field.id, 'required', e.target.checked)}
+              id="label-input"
+              type="text" 
+              className="property-input"
+              value={field.label}
+              onChange={(e) => onUpdateProperty(field.id, 'label', e.target.value)}
             />
-            <span className="slider round"></span>
-          </label>
+          </div>
+          <div className="property-item-toggle">
+            <label htmlFor="required-toggle">Obrigatório</label>
+            <label className="switch">
+              <input 
+                  id="required-toggle"
+                  type="checkbox" 
+                  checked={field.required}
+                  onChange={(e) => onUpdateProperty(field.id, 'required', e.target.checked)}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
         </div>
-        
-        <hr className="divider" />
 
-        {/* Renderização condicional: mostra o editor de opções APENAS se o campo for do tipo 'radio' */}
-        {field.type === 'radio' && (
-            <RadioOptionsEditor field={field} onUpdateProperty={onUpdateProperty} />
+        {/* --- SECÇÃO "APARÊNCIA" --- */}
+        {['text', 'textarea', 'email'].includes(field.type) && (
+            <div className="panel-section">
+                <h4 className="panel-section-title">Aparência</h4>
+                <div className="property-item">
+                    <label htmlFor="placeholder-input">Texto de Exemplo (Placeholder)</label>
+                    <input 
+                        id="placeholder-input"
+                        type="text" 
+                        className="property-input"
+                        value={field.placeholder || ''}
+                        onChange={(e) => onUpdateProperty(field.id, 'placeholder', e.target.value)}
+                    />
+                </div>
+            </div>
         )}
 
+        {/* --- SECÇÃO "OPÇÕES" --- */}
+        {['radio', 'checkbox'].includes(field.type) && (
+            <div className="panel-section">
+                <h4 className="panel-section-title">Opções</h4>
+                <RadioOptionsEditor field={field} onUpdateProperty={onUpdateProperty} />
+            </div>
+        )}
       </div>
 
-      <div className="panel-footer">
+      {/* --- ZONA DE PERIGO NO RODAPÉ --- */}
+      <div className="panel-footer-destructive">
             <button className="delete-button-panel" onClick={() => onDelete(field.id)}>
                 <FontAwesomeIcon icon={faTrash} />
                 Apagar Campo

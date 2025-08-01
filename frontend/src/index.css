@@ -4,36 +4,48 @@
 
 /* --- O NOSSO NOVO SISTEMA DE DESIGN --- */
 :root {
-  /* Cores */
-  --cor-primaria: #1e1e1e;
+  /* Cores Principais */
+  --cor-primaria: #1a1a1a; /* Um preto um pouco mais suave */
   --cor-primaria-hover: #333;
-  --cor-texto: #333;
-  --cor-texto-claro: #888;
-  --cor-fundo: #f0f2f5;
-  --cor-branco: #fff;
-  --cor-borda: #e0e0e0;
-  --cor-borda-focada: #ccc;
-  --cor-fundo-hover: #f9f9f9;
+  --cor-sucesso: #28a745;
   --cor-perigo: #e53e3e;
+
+  /* Cores de Texto */
+  --cor-texto-principal: #212529;
+  --cor-texto-secundario: #6c757d; /* Cinza para texto de apoio */
+  
+  /* Cores de Fundo e Bordas */
+  --cor-fundo: #f4f7f9; /* Um cinza azulado muito claro */
+  --cor-branco: #ffffff;
+  --cor-borda: #dee2e6;
+  --cor-fundo-hover: #e9ecef;
+
+  /* --- NOVAS VARIÁVEIS PARA FORMULÁRIOS (AQUI ESTÁ A MAGIA) --- */
+  --cor-input-fundo: var(--cor-branco);
+  --cor-input-texto: var(--cor-texto-principal);
+  --cor-input-borda: #ced4da;
+  --cor-input-borda-foco: var(--cor-primaria);
+  --sombra-input-foco: 0 0 0 3px rgba(30, 30, 30, 0.15);
 
   /* Tipografia */
   --fonte-principal: 'Inter', sans-serif;
   --fonte-tamanho-base: 16px;
   --fonte-tamanho-pequeno: 14px;
   --fonte-tamanho-grande: 18px;
-  --fonte-peso-normal: 500;
+  --fonte-peso-normal: 400; /* Ajustado para melhor legibilidade */
   --fonte-peso-negrito: 600;
 
   /* Espaçamento */
+  --espacamento-xs: 4px;
   --espacamento-s: 8px;
-  --espacamento-m: 15px;
-  --espacamento-l: 20px;
-  --espacamento-xl: 30px;
-  --espacamento-xxl: 40px;
+  --espacamento-m: 16px; /* Aumentado para mais "ar" */
+  --espacamento-l: 24px;
+  --espacamento-xl: 32px;
+  --espacamento-xxl: 48px;
 
   /* Outros */
-  --raio-borda: 8px;
-  --sombra-card: 0 2px 8px rgba(0,0,0,0.05);
+  --raio-borda: 6px; /* Um pouco mais subtil */
+  --sombra-card: 0 4px 20px rgba(0,0,0,0.07);
 }
 
 * {
@@ -45,7 +57,7 @@
 body {
     font-family: var(--fonte-principal);
     background-color: var(--cor-fundo);
-    color: var(--cor-texto);
+    color: var(--cor-texto-principal); /* Usando a nova variável */
     -webkit-font-smoothing: antialiased;
 }
 
@@ -148,9 +160,12 @@ body {
 
 .page-content {
     flex-grow: 1;
-    overflow-y: auto; /* Adiciona scroll apenas ao conteúdo se ele for grande */
-    padding: var(--espacamento-xxl); /* O nosso "espaçamento de respiração" */
-    background-color: var(--cor-fundo); /* Fundo cinza para o conteúdo */
+    overflow-y: auto;
+    padding: var(--espacamento-xl); /* Aumentamos o respiro */
+    background-color: var(--cor-fundo);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 /* --- PÁGINA PRINCIPAL (MAIN CONTENT) --- */
@@ -176,60 +191,85 @@ body {
 }
 .workspace-controls {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--espacamento-l);
     gap: var(--espacamento-m);
+    margin-bottom: var(--espacamento-l);
 }
-.search-input {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid var(--cor-borda-focada);
+.search-input, .filter-select {
+    flex-grow: 1; /* Faz com que o campo de busca ocupe mais espaço */
+    padding: 12px var(--espacamento-m);
+    border: 1px solid var(--cor-input-borda);
     border-radius: var(--raio-borda);
     font-size: var(--fonte-tamanho-base);
 }
+
 .filter-select {
-    padding: 10px 15px;
-    border: 1px solid var(--cor-borda-focada);
-    border-radius: var(--raio-borda);
-    font-size: var(--fonte-tamanho-base);
-    background-color: var(--cor-branco);
+    flex-grow: 0;
+    min-width: 200px; /* Largura mínima para o seletor */
 }
+
+.search-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: var(--cor-input-borda-foco);
+    box-shadow: var(--sombra-input-foco);
+}
+
+/* --- DASHBOARD: CARDS DE FORMULÁRIO (.form-card) --- */
 .form-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: var(--espacamento-l);
+    background-color: var(--cor-branco);
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-borda);
-    margin-bottom: 12px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background-color: var(--cor-branco);
-}
-.form-card:hover {
-    border-color: var(--cor-primaria-hover);
+    margin-bottom: var(--espacamento-m);
     box-shadow: var(--sombra-card);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
+
+.form-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
 .form-card-info span {
     font-weight: var(--fonte-peso-negrito);
     font-size: var(--fonte-tamanho-grande);
+    color: var(--cor-texto-principal);
 }
+
 .form-card-info small {
-    margin-top: 4px;
-    color: var(--cor-texto-claro);
+    display: block;
+    margin-top: var(--espacamento-xs);
+    color: var(--cor-texto-secundario);
+    font-size: var(--fonte-tamanho-pequeno);
 }
-.action-button {
+
+.form-card-actions {
     display: flex;
+    gap: var(--espacamento-m);
+}
+
+/* Botão Genérico de Ação */
+.action-button {
+    display: inline-flex; /* Para alinhar ícone e texto */
     align-items: center;
     gap: var(--espacamento-s);
-    padding: var(--espacamento-s) 12px;
+    padding: var(--espacamento-s) var(--espacamento-m);
+    background-color: var(--cor-branco);
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-borda);
-    color: var(--cor-texto);
-    font-weight: var(--fonte-peso-normal);
+    color: var(--cor-texto-principal);
+    font-weight: var(--fonte-peso-negrito);
     font-size: var(--fonte-tamanho-pequeno);
-    background-color: var(--cor-fundo-hover);
-    transition: background-color 0.2s, box-shadow 0.2s;
     text-decoration: none;
+    transition: all 0.2s;
+}
+
+.action-button:hover {
+    background-color: var(--cor-fundo-hover);
+    border-color: var(--cor-input-borda-foco);
+    color: var(--cor-primaria);
 }
 .action-button:hover {
     background-color: var(--cor-fundo);
@@ -243,11 +283,20 @@ body {
     height: 100%;
     background-color: var(--cor-fundo);
 }
+
+/* --- ESTILO PARA O CAMPO SELECIONADO NO BUILDER --- */
+
+.form-field-preview.selected {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(30, 30, 30, 0.1), 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Cabeçalho do Construtor */
 .builder-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px var(--espacamento-l);
+    padding: var(--espacamento-m) var(--espacamento-l);
     background-color: var(--cor-branco);
     border-bottom: 1px solid var(--cor-borda);
     flex-shrink: 0;
@@ -262,7 +311,8 @@ body {
     font-weight: var(--fonte-peso-negrito);
     border: none;
     padding: var(--espacamento-s);
-    border-radius: 4px;
+    border-radius: var(--raio-borda);
+    transition: background-color 0.2s;
 }
 .form-title-input-header:focus {
     outline: none;
@@ -270,82 +320,118 @@ body {
 }
 .category-select-header {
     font-size: var(--fonte-tamanho-pequeno);
-    padding: var(--espacamento-s);
-    border: 1px solid var(--cor-borda-focada);
-    border-radius: 4px;
-    background-color: var(--cor-fundo-hover);
+    padding: var(--espacamento-s) 12px;
+    border: 1px solid var(--cor-input-borda);
+    border-radius: var(--raio-borda);
+    background-color: var(--cor-branco);
 }
 .publish-btn {
-    background-color: var(--cor-primaria);
+    padding: 12px var(--espacamento-l);
+    background-color: var(--cor-sucesso);
     color: var(--cor-branco);
     border: none;
-    padding: 10px var(--espacamento-l);
     border-radius: var(--raio-borda);
     font-size: var(--fonte-tamanho-base);
     font-weight: var(--fonte-peso-negrito);
     cursor: pointer;
+    transition: background-color 0.2s;
+    transition: all 0.2s ease-in-out; /* Adicione esta linha */
+
 }
+
 .publish-btn:hover {
-    background-color: var(--cor-primaria-hover);
+    background-color: #218838; /* Verde mais escuro */
+    transform: translateY(-2px); /* Adicione esta linha para um efeito de "elevação" */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* E uma sombra */
 }
+
+/* Layout Principal do Construtor */
 .builder-main-content {
     display: flex;
     flex-grow: 1;
-    overflow: hidden;
+    overflow: hidden; /* Controla o scroll dos painéis individuais */
 }
+
+/* Painel da Esquerda (Campos Disponíveis) */
 .builder-sidebar-left {
-    width: 280px;
-    background-color: var(--cor-branco);
+    width: 260px;
+    background-color: var(--cor-branco); /* Fundo branco */
     padding: var(--espacamento-l);
     border-right: 1px solid var(--cor-borda);
     flex-shrink: 0;
     overflow-y: auto;
 }
+
 .builder-sidebar-left h3 {
     font-size: var(--fonte-tamanho-base);
-    margin-bottom: var(--espacamento-m);
-    color: #555;
+    margin-bottom: var(--espacamento-l);
+    color: var(--cor-texto-principal);
+    font-weight: var(--fonte-peso-negrito);
 }
+
 .field-type-item {
-    background-color: var(--cor-fundo-hover);
+    background-color: #ffffff;
     border: 1px solid var(--cor-borda);
     padding: var(--espacamento-m);
-    margin-bottom: 10px;
+    margin-bottom: var(--espacamento-s);
     border-radius: var(--raio-borda);
-    font-weight: var(--fonte-peso-normal);
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
+
 .field-type-item:hover {
-    background-color: var(--cor-branco);
-    box-shadow: var(--sombra-card);
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    border-color: var(--cor-primaria);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
+/* Tela Principal (Canvas) */
 .builder-canvas-center {
     flex-grow: 1;
-    padding: var(--espacamento-xxl);
+    padding: var(--espacamento-xl);
     overflow-y: auto;
+    background-color: var(--cor-fundo); /* Garante o fundo cinza claro */
 }
+
 .canvas-empty-state {
     text-align: center;
     padding: 80px var(--espacamento-xxl);
     border: 2px dashed var(--cor-borda-focada);
     border-radius: var(--raio-borda);
-    color: var(--cor-texto-claro);
+    color: var(--cor-texto-secundario);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
 .canvas-empty-state h3 {
     font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: var(--espacamento-m);
+    color: var(--cor-texto-principal);
 }
+
+/* Pré-visualização do Campo Arrastável */
 .form-field-preview {
-    background-color: var(--cor-fundo-hover);
+    background-color: var(--cor-branco);
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-borda);
     padding: var(--espacamento-l);
     margin-bottom: var(--espacamento-m);
-    position: relative; 
+    position: relative;
     display: flex;
     align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s;
 }
+
+.form-field-preview:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
 .form-field-preview label {
     display: block;
     font-weight: var(--fonte-peso-normal);
@@ -355,8 +441,9 @@ body {
     cursor: grab;
     padding-right: var(--espacamento-m);
     font-size: 20px;
-    color: var(--cor-borda-focada);
+    color: var(--cor-texto-secundario);
 }
+
 .field-content {
     flex-grow: 1;
 }
@@ -384,24 +471,32 @@ textarea.field-input {
     font-size: inherit;
 }
 
-/* --- PAINEL DE PROPRIEDADES --- */
+/* --- PAINEL DE PROPRIEDADES (DIREITA) --- */
 .properties-panel-right {
     width: 320px;
-    background-color: var(--cor-branco);
+    background-color: var(--cor-branco); /* Fundo branco */
     border-left: 1px solid var(--cor-borda);
     flex-shrink: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
+
 .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--espacamento-l);
     border-bottom: 1px solid var(--cor-borda);
+    background-color: var(--cor-branco);
     flex-shrink: 0;
 }
+
+.panel-content {
+    padding: var(--espacamento-l);
+    flex-grow: 1;
+}
+
 .panel-header h3 {
     font-size: var(--fonte-tamanho-grande);
 }
@@ -416,31 +511,75 @@ textarea.field-input {
     padding: var(--espacamento-l);
     flex-grow: 1;
 }
+
 .property-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--espacamento-m);
+    margin-bottom: var(--espacamento-l);
 }
-.property-item label {
-    font-weight: var(--fonte-peso-normal);
-}
-.property-input {
-    width: 100%;
-    padding: var(--espacamento-s);
-    border-radius: 4px;
-    border: 1px solid var(--cor-borda-focada);
-    margin-top: 5px;
+
+/* Rótulos no painel de propriedades */
+.property-item > label, 
+.property-item-options > label {
+    display: block;
+    font-weight: var(--fonte-peso-negrito);
+    margin-bottom: var(--espacamento-s);
     font-size: var(--fonte-tamanho-pequeno);
 }
+
+/* Inputs no painel de propriedades */
+.property-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-input-borda);
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-base);
+}
+
+.property-input:focus {
+    outline: none;
+    border-color: var(--cor-input-borda-foco);
+    box-shadow: var(--sombra-input-foco);
+}
+
+/* Editor de opções de múltipla escolha */
+.option-editor-item input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid var(--cor-input-borda);
+    border-radius: var(--raio-borda);
+}
+
+.add-option-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--cor-fundo-hover);
+    border: 1px dashed var(--cor-borda-focada);
+    border-radius: var(--raio-borda);
+    cursor: pointer;
+    font-weight: var(--fonte-peso-negrito);
+    color: var(--cor-texto-secundario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacamento-s);
+    transition: all 0.2s;
+}
+
+.add-option-btn:hover {
+    background-color: var(--cor-borda);
+    color: var(--cor-texto-principal);
+}
+/* Rodapé do painel de propriedades */
 .panel-footer {
     padding: var(--espacamento-l);
     border-top: 1px solid var(--cor-borda);
     flex-shrink: 0;
+    background-color: var(--cor-branco);
 }
+
 .delete-button-panel {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid var(--cor-perigo);
     color: var(--cor-perigo);
     background-color: var(--cor-branco);
@@ -451,98 +590,20 @@ textarea.field-input {
     align-items: center;
     justify-content: center;
     gap: var(--espacamento-s);
+    transition: all 0.2s;
 }
+
 .delete-button-panel:hover {
     background-color: var(--cor-perigo);
     color: var(--cor-branco);
 }
+
 .divider {
     border: none;
     border-top: 1px solid var(--cor-borda);
     margin: var(--espacamento-l) 0;
 }
 
-/* --- CAMPOS ESPECÍFICOS (RADIO, ETC) --- */
-.radio-options-container, .radio-options-container-submission {
-    margin-top: var(--espacamento-s);
-    border: 1px solid var(--cor-borda);
-    border-radius: 4px;
-    padding: var(--espacamento-m);
-    background-color: var(--cor-fundo);
-}
-.radio-option-item, 
-.radio-option-item-submission {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-.radio-option-item:last-child, 
-.radio-option-item-submission:last-child {
-    margin-bottom: 0;
-}
-.radio-option-item input[type="radio"],
-.radio-option-item-submission input[type="radio"] {
-    width: auto;
-    height: auto;
-    margin-right: 10px;
-    flex-shrink: 0;
-}
-.radio-option-item label,
-.radio-option-item-submission label {
-    font-weight: var(--fonte-peso-normal);
-}
-.radio-no-options-text {
-    color: var(--cor-texto-claro);
-    font-style: italic;
-}
-
-/* --- PAINEL DE PROPRIEDADES (EDITOR DE OPÇÕES) --- */
-.property-item-options {
-    margin-top: var(--espacamento-l);
-}
-.property-item-options > label { /* Apenas o label principal */
-    display: block;
-    font-weight: var(--fonte-peso-normal);
-    margin-bottom: var(--espacamento-s);
-}
-.option-editor-item {
-    display: flex;
-    align-items: center;
-    gap: var(--espacamento-s);
-    margin-bottom: var(--espacamento-s);
-}
-.option-editor-item input {
-    flex-grow: 1;
-    padding: var(--espacamento-s);
-    border: 1px solid var(--cor-borda-focada);
-    border-radius: 4px;
-}
-.option-editor-item button {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-}
-.option-editor-item button:hover {
-    color: var(--cor-perigo);
-}
-.add-option-btn {
-    width: 100%;
-    margin-top: 10px;
-    padding: var(--espacamento-s);
-    background-color: var(--cor-fundo);
-    border: 1px solid var(--cor-borda);
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: var(--fonte-peso-normal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--espacamento-s);
-}
-.add-option-btn:hover {
-    background-color: var(--cor-borda);
-}
 
 /* --- INTERRUPTOR (TOGGLE SWITCH) --- */
 .switch {
@@ -563,7 +624,7 @@ textarea.field-input {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--cor-borda-focada);
+  background-color: #ccc;
   transition: .4s;
 }
 .slider:before {
@@ -602,9 +663,9 @@ input:checked + .slider:before {
 .category-title {
     font-size: 22px;
     font-weight: var(--fonte-peso-negrito);
-    margin-bottom: var(--espacamento-m);
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--cor-fundo);
+    margin-bottom: var(--espacamento-l);
+    padding-bottom: var(--espacamento-m);
+    border-bottom: 2px solid var(--cor-borda);
     color: var(--cor-primaria);
 }
 
@@ -686,35 +747,44 @@ input:checked + .slider:before {
 
 .page-content {
     flex-grow: 1;
-    overflow-y: auto; /* Adiciona scroll apenas ao conteúdo se ele for grande */
-    padding: var(--espacamento-xxl); /* O nosso "espaçamento de respiração" */
+    overflow-y: auto;
+    padding: var(--espacamento-xxl);
+    background-color: var(--cor-fundo);
+    
+    /* --- Adicione estas 3 linhas --- */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-/* --- ESTILOS PARA O CABEÇALHO DE PÁGINA (ADMIN, ETC) --- */
+/* --- CABEÇALHO DE PÁGINA PADRÃO (para Admin, Portal, etc.) --- */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--espacamento-xl);
+    padding-bottom: var(--espacamento-l);
+    border-bottom: 1px solid var(--cor-borda);
 }
 
 .page-header h1 {
     font-size: 28px;
     font-weight: var(--fonte-peso-negrito);
-    color: var(--cor-primaria);
+    color: var(--cor-texto-principal);
 }
 
 .page-header p {
     font-size: var(--fonte-tamanho-base);
-    color: var(--cor-texto-claro);
+    color: var(--cor-texto-secundario);
     margin-top: var(--espacamento-s);
 }
 
+/* Botão de Adicionar (ex: Convidar Utilizador) */
 .add-user-btn {
     display: flex;
     align-items: center;
     gap: var(--espacamento-s);
-    padding: 10px var(--espacamento-m);
+    padding: 12px var(--espacamento-m);
     background-color: var(--cor-primaria);
     color: var(--cor-branco);
     border: none;
@@ -729,6 +799,7 @@ input:checked + .slider:before {
     background-color: var(--cor-primaria-hover);
 }
 
+
 /* --- ESTILOS PARA O MENU DO PORTAL DO UTILIZADOR --- */
 
 .user-portal-menu-list {
@@ -737,14 +808,12 @@ input:checked + .slider:before {
 
 .menu-grid {
     display: grid;
-    /* Cria uma grelha com colunas que se ajustam ao tamanho do ecrã */
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: var(--espacamento-l);
 }
 
 .menu-card-link {
     text-decoration: none;
-    color: var(--cor-texto);
 }
 
 .menu-card {
@@ -758,23 +827,763 @@ input:checked + .slider:before {
     justify-content: center;
     text-align: center;
     height: 180px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.2s ease-in-out;
     box-shadow: var(--sombra-card);
 }
 
-.menu-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    border-color: var(--cor-primaria);
+.menu-card:hover .menu-card-icon {
+    color: var(--cor-sucesso);
 }
 
 .menu-card-icon {
     font-size: 40px;
     color: var(--cor-primaria);
     margin-bottom: var(--espacamento-m);
+    transition: color 0.2s;
 }
 
 .menu-card-title {
     font-weight: var(--fonte-peso-negrito);
     font-size: var(--fonte-tamanho-base);
+    color: var(--cor-texto-principal);
+}
+
+/* --- ESTILOS PADRONIZADOS PARA A PÁGINA DE SUBMISSÃO --- */
+
+.submission-page-container {
+    width: 100%;
+    /* Removemos o display flex daqui, pois o pai (.page-content) já está a controlar */
+    display: flex; /* Adicione esta linha */
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Faz com que o container ocupe todo o espaço disponível no .page-content */
+}
+
+.form-submission-card {
+    width: 100%;
+    max-width: 650px; /* Um pouco mais estreito para conforto na leitura */
+    background-color: var(--cor-branco);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--cor-borda);
+    overflow: hidden;
+}
+
+.form-submission-header {
+    padding: var(--espacamento-l);
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.form-submission-header h2 {
+    font-size: 22px;
+    font-weight: var(--fonte-peso-negrito);
+    color: var(--cor-texto-principal);
+    margin-bottom: var(--espacamento-s);
+}
+
+.form-submission-header p {
+    font-size: var(--fonte-tamanho-base);
+    color: var(--cor-texto-secundario);
+}
+
+.submission-form {
+    padding: var(--espacamento-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacamento-l); /* Espaçamento consistente entre campos */
+}
+
+.form-group label {
+    font-weight: var(--fonte-peso-negrito);
+    margin-bottom: var(--espacamento-s);
+    font-size: var(--fonte-tamanho-pequeno);
+    color: var(--cor-texto-principal);
+}
+
+/* Estilo unificado para todos os campos de input, usando as nossas novas variáveis */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="date"],
+.form-group input[type="file"],
+.form-group textarea {
+    width: 100%;
+    font-family: var(--fonte-principal);
+    font-size: var(--fonte-tamanho-base);
+    padding: var(--espacamento-m); /* Padding padronizado */
+    color: var(--cor-input-texto);
+    background-color: var(--cor-input-fundo);
+    border: 1px solid var(--cor-input-borda);
+    border-radius: var(--raio-borda);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--cor-input-borda-foco);
+    box-shadow: var(--sombra-input-foco);
+}
+
+/* Estilos específicos para o campo de upload de ficheiro */
+.form-group input[type="file"] {
+    padding: var(--espacamento-s); /* Ajuste de padding para o input de ficheiro */
+}
+
+.form-group input[type="file"]::file-selector-button {
+    font-weight: var(--fonte-peso-negrito);
+    padding: var(--espacamento-s) var(--espacamento-m);
+    border-radius: 4px;
+    border: 1px solid var(--cor-primaria);
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: var(--espacamento-m);
+}
+
+.form-group input[type="file"]::file-selector-button:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+.submit-btn {
+    padding: var(--espacamento-m);
+    background-color: var(--cor-sucesso); /* Verde para uma ação positiva */
+    color: var(--cor-branco);
+    border: none;
+    border-radius: var(--raio-borda);
+    font-size: var(--fonte-tamanho-base);
+    font-weight: var(--fonte-peso-negrito);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: var(--espacamento-m);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacamento-s);
+}
+
+.submit-btn:hover:not(:disabled) {
+    background-color: #218838; /* Um verde mais escuro no hover */
+}
+
+.submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Estilo para o campo de assinatura */
+.signature-pad {
+    width: 100%;
+    height: 150px; /* Altura do campo de assinatura */
+    background-color: var(--cor-input-fundo);
+    border: 1px solid var(--cor-input-borda);
+    border-radius: var(--raio-borda);
+    cursor: crosshair; /* Muda o cursor para indicar uma área de desenho */
+    display: flex;
+    align-items: flex-end; /* Alinha a linha na parte de baixo */
+    padding: var(--espacamento-s);
+}
+
+.signature-placeholder-line {
+    width: 100%;
+    height: 1px;
+    background-color: var(--cor-input-borda);
+    margin-bottom: var(--espacamento-m); /* Distância da linha à base */
+}
+
+/* --- ESTILO PARA TABELAS DE DADOS (.data-table) --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse; /* Remove o espaço entre as bordas */
+    background-color: var(--cor-branco);
+    border-radius: var(--raio-borda);
+    overflow: hidden; /* Garante que o raio da borda seja aplicado nas células */
+    box-shadow: var(--sombra-card);
+}
+
+.data-table th, .data-table td {
+    padding: var(--espacamento-m);
+    text-align: left;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.data-table thead th {
+    background-color: var(--cor-fundo);
+    font-weight: var(--fonte-peso-negrito);
+    font-size: var(--fonte-tamanho-pequeno);
+    color: var(--cor-texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.data-table tbody tr:hover {
+    background-color: var(--cor-fundo-hover);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none; /* Remove a borda da última linha */
+}
+
+/* --- ESTILOS PARA O MODO "CARD FORM" (UMA PERGUNTA POR VEZ) --- */
+
+.submission-page-container.card-form-mode {
+    background: linear-gradient(170deg, var(--cor-fundo) 0%, #ffffff 100%);
+}
+
+.form-submission-card.card-step-card {
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    min-height: 450px;
+    /* Sombra mais pronunciada e distribuída para dar um efeito de "flutuação" */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+
+.submission-form-step {
+    flex-grow: 1; /* Faz esta área crescer para empurrar a navegação para baixo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espacamento-xl);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: var(--cor-borda);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: var(--espacamento-m);
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--cor-sucesso);
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Animação para a entrada de cada pergunta */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animação para a entrada de cada pergunta */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-step {
+    animation: fadeIn 0.4s ease-in-out;
+    width: 100%;
+}
+
+/* --- NOVOS ESTILOS PARA CENTRALIZAR E AUMENTAR A PERGUNTA --- */
+.submission-form-step .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza a pergunta e o campo de resposta */
+    width: 100%;
+}
+
+.submission-form-step .form-group label {
+    font-size: 26px; /* Aumenta significativamente o tamanho da fonte */
+    font-weight: 600; /* Um pouco mais de peso */
+    color: var(--cor-texto-principal);
+    text-align: center; /* Garante que textos longos quebrem de forma centralizada */
+    margin-bottom: var(--espacamento-l); /* Aumenta o espaço entre a pergunta e a resposta */
+    line-height: 1.4; /* Melhora a legibilidade para perguntas com mais de uma linha */
+}
+
+/* Garante que os campos de resposta mantenham uma largura máxima agradável */
+.submission-form-step .form-group > *:not(label):not(.error-message) {
+    max-width: 450px;
+    width: 100%;
+}
+
+.step-navigation {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--espacamento-l);
+    border-top: 1px solid var(--cor-borda);
+    background-color: var(--cor-fundo-hover);
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: var(--espacamento-s);
+    padding: 12px var(--espacamento-l);
+    font-size: var(--fonte-tamanho-base);
+    font-weight: var(--fonte-peso-negrito);
+    border-radius: var(--raio-borda);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.prev-button {
+    background-color: transparent;
+    color: var(--cor-texto-secundario);
+}
+.prev-button:hover {
+    background-color: var(--cor-borda);
+    color: var(--cor-texto-principal);
+}
+
+.next-button {
+    background-color: var(--cor-primaria);
+    color: var(--cor-branco);
+}
+.next-button:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+.error-message {
+    color: var(--cor-perigo);
+    font-size: var(--fonte-tamanho-pequeno);
+    margin-top: var(--espacamento-s);
+}
+
+/* --- MELHORIA DE UX: FEEDBACK DE CLIQUE NOS BOTÕES --- */
+
+.submit-btn,
+.nav-button,
+.action-button,
+.add-user-btn,
+.publish-btn {
+    /* Adiciona uma transição suave à propriedade transform */
+    transition: background-color 0.2s, transform 0.1s ease-in-out;
+}
+
+.submit-btn:active,
+.nav-button:active,
+.action-button:active,
+.add-user-btn:active,
+.publish-btn:active {
+    /* Quando o botão está a ser pressionado, ele "afunda" ligeiramente */
+    transform: scale(0.98);
+}
+
+/* --- MELHORIA DE UX: TRANSIÇÃO DE PÁGINA --- */
+
+/* Cria a animação de fade-in */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Aplica a animação a todos os filhos diretos do nosso .page-content */
+.page-content > * {
+    animation: fadeInPage 0.5s ease-out forwards;
+}
+
+/* Em frontend/src/index.css */
+.form-field-preview {
+    /* ... estilos existentes ... */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Em frontend/src/index.css */
+.panel-content-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: var(--espacamento-l);
+    color: var(--cor-texto-secundario);
+}
+.panel-content-empty h3 {
+    font-weight: var(--fonte-peso-negrito);
+    color: var(--cor-texto-principal);
+    margin-bottom: var(--espacamento-s);
+}
+
+/* --- ESTILOS MELHORADOS PARA ESCOLHA ÚNICA E MÚLTIPLA --- */
+
+.radio-options-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacamento-s);
+}
+
+.radio-option-item {
+    display: block;
+    position: relative;
+}
+
+/* 1. Esconde tanto o rádio quanto o checkbox padrão */
+.radio-option-item input[type="radio"],
+.radio-option-item input[type="checkbox"] {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.radio-option-item label {
+    display: flex;
+    align-items: center;
+    padding: var(--espacamento-m);
+    border: 2px solid var(--cor-borda);
+    border-radius: var(--raio-borda);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+}
+
+/* 2. Cria o nosso elemento personalizado (círculo ou quadrado) */
+.radio-option-item label::before {
+    content: '';
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--cor-borda-focada);
+    margin-right: var(--espacamento-m);
+    flex-shrink: 0;
+    transition: all 0.2s ease-in-out;
+}
+
+/* --- ESTILOS ESPECÍFICOS --- */
+
+/* Transforma o elemento num CÍRCULO para radio buttons */
+.radio-option-item input[type="radio"] + label::before {
+    border-radius: 50%;
+}
+
+/* Transforma o elemento num QUADRADO para checkboxes */
+.radio-option-item input[type="checkbox"] + label::before {
+    border-radius: 4px;
+}
+
+/* Efeito Hover */
+.radio-option-item label:hover {
+    border-color: var(--cor-primaria);
+}
+.radio-option-item label:hover::before {
+    border-color: var(--cor-primaria);
+}
+
+/* --- ESTILOS DE SELECIONADO --- */
+
+/* Para radio e checkbox selecionados */
+.radio-option-item input:checked + label {
+    border-color: var(--cor-primaria);
+    background-color: #f8f9fa;
+    color: var(--cor-primaria);
+    font-weight: var(--fonte-peso-negrito);
+}
+.radio-option-item input:checked + label::before {
+    border-color: var(--cor-primaria);
+    background-color: var(--cor-primaria);
+}
+
+/* Adiciona o PONTO para radio selecionado */
+.radio-option-item input[type="radio"]:checked + label::before {
+    box-shadow: inset 0 0 0 4px var(--cor-branco);
+}
+
+/* Adiciona o "VISTO" (check) para checkbox selecionado usando um SVG */
+.radio-option-item input[type="checkbox"]:checked + label::before {
+    /* Remove o content para que o background seja visível */
+    content: ''; 
+    
+    /* SVG do "visto" codificado como URL. É limpo, fiável e não depende de fontes. */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M2 8l4 4 8-8'/%3e%3c/svg%3e");
+    
+    /* Garante que o ícone fique perfeitamente centrado */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 70%; /* Ajusta o tamanho do "visto" dentro da caixa */
+}
+
+/* Foco para acessibilidade */
+.radio-option-item input:focus + label {
+    box-shadow: var(--sombra-input-foco);
+}
+
+/* --- ESTILOS PARA A PÁGINA DE LOGIN --- */
+
+.login-page-container {
+    display: flex; /* Transforma o container num centro flexbox */
+    align-items: center; /* Alinha o cartão de login verticalmente */
+    justify-content: center; /* Alinha o cartão de login horizontalmente */
+    min-height: 100vh; /* Garante que o container ocupe a tela inteira */
+    background-color: var(--cor-fundo); /* Usa a cor de fundo padrão da aplicação */
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px; /* Define uma largura máxima para o formulário */
+    padding: var(--espacamento-xl);
+    background-color: var(--cor-branco);
+    border-radius: var(--raio-borda);
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--cor-borda);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--espacamento-l);
+}
+
+.login-header h2 {
+    font-size: 28px;
+    margin-bottom: var(--espacamento-s);
+    color: var(--cor-texto-principal);
+}
+
+.login-header p {
+    color: var(--cor-texto-secundario);
+}
+
+.login-form .form-group {
+    margin-bottom: var(--espacamento-m);
+}
+
+.login-form .form-group:last-of-type {
+    margin-bottom: var(--espacamento-l);
+}
+
+.login-form label {
+    display: block;
+    font-weight: var(--fonte-peso-negrito);
+    margin-bottom: var(--espacamento-s);
+    font-size: var(--fonte-tamanho-pequeno);
+}
+
+/* Reutiliza o estilo de input que já padronizámos */
+.login-form input {
+    width: 100%;
+    font-family: var(--fonte-principal);
+    font-size: var(--fonte-tamanho-base);
+    padding: 12px; /* Padding ajustado para login */
+    color: var(--cor-input-texto);
+    background-color: var(--cor-input-fundo);
+    border: 1px solid var(--cor-input-borda);
+    border-radius: var(--raio-borda);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: var(--cor-input-borda-foco);
+    box-shadow: var(--sombra-input-foco);
+}
+
+/* Em frontend/src/index.css */
+.report-summary-card {
+  background: var(--cor-branco);
+  padding: var(--espacamento-l);
+  border-radius: var(--raio-borda);
+  box-shadow: var(--sombra-card);
+  text-align: center;
+  margin-bottom: var(--espacamento-xl);
+}
+.report-summary-card h2 {
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-tamanho-base);
+}
+.report-summary-card span {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--espacamento-l);
+}
+.chart-card {
+  background: var(--cor-branco);
+  padding: var(--espacamento-l);
+  border-radius: var(--raio-borda);
+  box-shadow: var(--sombra-card);
+}
+.chart-card h3 {
+  text-align: center;
+  margin-bottom: var(--espacamento-m);
+}
+
+/* --- ESTILOS PARA O MODAL DE PARTILHA --- */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out; /* Animação de entrada */
+}
+
+.modal-content {
+  background: white;
+  padding: var(--espacamento-xl);
+  border-radius: var(--raio-borda);
+  width: 100%;
+  max-width: 550px;
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.2s;
+}
+.modal-close-btn:hover {
+  color: #333;
+}
+
+.modal-content h2 {
+  margin-bottom: var(--espacamento-s);
+}
+.modal-content p {
+  color: var(--cor-texto-secundario);
+}
+
+.share-link-container {
+  display: flex;
+  margin-top: var(--espacamento-l);
+}
+.share-link-container input {
+  flex-grow: 1;
+  padding: 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-borda) 0 0 var(--raio-borda);
+  background-color: var(--cor-fundo);
+  font-size: var(--fonte-tamanho-base);
+}
+.share-link-container button {
+  padding: 12px 16px;
+  border: 1px solid var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: white;
+  border-radius: 0 var(--raio-borda) var(--raio-borda) 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: var(--fonte-peso-negrito);
+  transition: background-color 0.2s;
+}
+.share-link-container button.copied {
+    background-color: var(--cor-sucesso);
+    border-color: var(--cor-sucesso);
+}
+
+/* --- ESTILOS PARA O MENU DROPDOWN DE AÇÕES --- */
+
+.actions-dropdown-container {
+  position: relative; /* Essencial para posicionar o menu dropdown */
+  display: inline-block;
+}
+
+.more-button {
+  padding: var(--espacamento-s) 12px; /* Deixa o botão mais quadrado */
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0; /* Alinha o menu à direita do container */
+  top: calc(100% + 5px); /* Posiciona o menu abaixo do botão com um pequeno espaço */
+  background-color: var(--cor-branco);
+  border-radius: var(--raio-borda);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border: 1px solid var(--cor-borda);
+  z-index: 10;
+  width: 200px; /* Largura do menu */
+  overflow: hidden; /* Garante que os itens respeitem o border-radius */
+  animation: fadeInDropdown 0.2s ease-out; /* Animação de entrada */
+}
+
+@keyframes fadeInDropdown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espacamento-m);
+  padding: 12px var(--espacamento-m);
+  text-decoration: none;
+  color: var(--cor-texto-principal);
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: var(--fonte-tamanho-pequeno);
+}
+
+.dropdown-item:hover {
+  background-color: var(--cor-fundo-hover);
+}
+
+.dropdown-item svg {
+  width: 16px; /* Tamanho fixo para os ícones no menu */
+  color: var(--cor-texto-secundario);
+}
+
+/* --- ESTILOS REFINADOS PARA O PAINEL DE PROPRIEDADES --- */
+
+.panel-section {
+  margin-bottom: var(--espacamento-xl);
+}
+
+.panel-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--espacamento-m);
+  padding-bottom: var(--espacamento-s);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.property-item, .property-item-toggle {
+  margin-bottom: var(--espacamento-m);
+}
+
+.property-item label, .property-item-toggle label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: var(--espacamento-s);
+  font-size: var(--fonte-tamanho-pequeno);
+  color: var(--cor-texto-principal);
+}
+
+.property-item-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Remove a margem de baixo da label do toggle */
+.property-item-toggle > label {
+    margin-bottom: 0;
+}
+
+/* Rodapé Destrutivo */
+.panel-footer-destructive {
+    margin-top: auto; /* Empurra o rodapé para o fundo do painel */
+    padding: var(--espacamento-l);
+    background-color: #fff5f5; /* Um vermelho muito claro */
+    border-top: 1px solid #fed7d7;
 }

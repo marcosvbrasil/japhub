@@ -1,7 +1,10 @@
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { SortableField } from '../components/SortableField';
 import { PropertiesPanel } from '../components/PropertiesPanel';
 
@@ -9,6 +12,7 @@ const availableFields = [
     { id: 'text', label: 'Texto Curto' },
     { id: 'textarea', label: 'Texto Longo' },
     { id: 'radio', label: 'Escolha Única' },
+    { id: 'checkbox', label: 'Múltipla Escolha' },
     { id: 'email', label: 'Email' },
     { id: 'date', label: 'Data' },
     { id: 'signature', label: 'Assinatura' },
@@ -16,13 +20,61 @@ const availableFields = [
 
 const availableCategories = ['Logística', 'Comercial', 'Financeiro', 'RH', 'Operações'];
 
-function FormBuilderPage({ onSaveForm }) {
+function FormBuilderPage() {
+    const { formId } = useParams();
+    const navigate = useNavigate();
+
     const [formFields, setFormFields] = useState([]);
     const [formTitle, setFormTitle] = useState('');
     const [formCategory, setFormCategory] = useState('');
     const [selectedFieldId, setSelectedFieldId] = useState(null);
-    const navigate = useNavigate();
-    
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (formId) {
+            setIsLoading(true);
+            const token = localStorage.getItem('japhub-token');
+            axios.get(`http://localhost:8000/api/formularios/${formId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                const form = response.data;
+                setFormTitle(form.name);
+                setFormCategory(form.categoria);
+                setFormFields(form.fields);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar formulário para edição:", error);
+                alert("Não foi possível carregar o formulário para edição.");
+                navigate('/admin/dashboard');
+            })
+            .finally(() => setIsLoading(false));
+        } else {
+            const savedDraft = localStorage.getItem('formBuilderDraft');
+            if (savedDraft) {
+                try {
+                    const draft = JSON.parse(savedDraft);
+                    setFormTitle(draft.title || '');
+                    setFormCategory(draft.category || '');
+                    setFormFields(draft.fields || []);
+                } catch (error) {
+                    console.error("Erro ao carregar o rascunho do formulário:", error);
+                }
+            }
+        }
+    }, [formId, navigate]);
+
+    useEffect(() => {
+        if (!formId) {
+            const formDraft = {
+                title: formTitle,
+                category: formCategory,
+                fields: formFields,
+            };
+            localStorage.setItem('formBuilderDraft', JSON.stringify(formDraft));
+        }
+    }, [formTitle, formCategory, formFields, formId]);
+
     const selectedField = useMemo(() => 
         formFields.find(f => f.id === selectedFieldId), 
         [formFields, selectedFieldId]
@@ -35,7 +87,7 @@ function FormBuilderPage({ onSaveForm }) {
             label: `Novo campo de ${fieldType.label}`,
             required: false,
             placeholder: '',
-            ...(fieldType.id === 'radio' && { options: [{ id: Date.now(), label: 'Opção 1' }] })
+            ...(['radio', 'checkbox'].includes(fieldType.id) && { options: [{ id: Date.now(), label: 'Opção 1' }] })
         };
         setFormFields((fields) => [...fields, newField]);
     };
@@ -49,29 +101,49 @@ function FormBuilderPage({ onSaveForm }) {
     };
     
     const deleteField = (idToDelete) => {
-        setFormFields(prevFields => prevFields.filter(field => field.id !== idToDelete));
-        setSelectedFieldId(null);
+        const fieldToDelete = formFields.find(f => f.id === idToDelete);
+        const confirmation = window.confirm(
+            `Tem a certeza de que quer apagar o campo "${fieldToDelete.label}"?`
+        );
+
+        if (confirmation) {
+            setFormFields(prevFields => prevFields.filter(field => field.id !== idToDelete));
+            setSelectedFieldId(null);
+        }
     };
     
-    const handlePublish = () => {
+    const handlePublish = async () => {
         if (!formTitle.trim()) {
             alert("Por favor, dê um título ao seu formulário.");
             return;
         }
-        if (formFields.length === 0) {
-            alert("Adicione pelo menos um campo antes de publicar!");
-            return;
-        }
         
-        // CORREÇÃO: Garante que a categoria está no payload
-        const newFormPayload = {
+        const formPayload = {
             name: formTitle,
             fields: formFields,
             categoria: formCategory,
         };
+
+        const token = localStorage.getItem('japhub-token');
         
-        // Chama a função "chefe" (addForm do App.jsx) para fazer o trabalho pesado
-        onSaveForm(newFormPayload);
+        try {
+            if (formId) {
+                await axios.put(`http://localhost:8000/api/formularios/${formId}`, formPayload, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert('Formulário atualizado com sucesso!');
+            } else {
+                await axios.post('http://localhost:8000/api/formularios', formPayload, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                alert('Formulário criado com sucesso!');
+                localStorage.removeItem('formBuilderDraft');
+            }
+            navigate('/admin/dashboard');
+        } catch (error) {
+            console.error("Erro ao salvar formulário:", error);
+            alert("Não foi possível salvar o formulário.");
+        }
     };
 
     const handleDragEnd = (event) => {
@@ -84,6 +156,14 @@ function FormBuilderPage({ onSaveForm }) {
         });
       }
     };
+
+    if (isLoading) {
+        return (
+            <div className="page-header">
+                <h1>A carregar construtor...</h1>
+            </div>
+        );
+    }
 
     return (
         <div className="builder-page-container">
@@ -108,7 +188,10 @@ function FormBuilderPage({ onSaveForm }) {
                     </select>
                 </div>
                 <div className="builder-header-right">
-                    <button className="publish-btn" onClick={handlePublish}>Publicar</button>
+                    <button className="publish-btn" onClick={handlePublish}>
+                        <FontAwesomeIcon icon={faCloudUploadAlt} style={{ marginRight: '8px' }} />
+                        {formId ? 'Guardar Alterações' : 'Publicar'}
+                    </button>
                 </div>
             </header>
 
@@ -139,6 +222,7 @@ function FormBuilderPage({ onSaveForm }) {
                                             key={field.id}
                                             field={field}
                                             onEdit={setSelectedFieldId}
+                                            isSelected={field.id === selectedFieldId}
                                         />
                                     ))}
                                 </SortableContext>

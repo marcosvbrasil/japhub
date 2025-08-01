@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-// Novo componente auxiliar para o input de ficheiro, para manter o código limpo
+// Importe os seus componentes de campo
+import SignatureField from '../components/SignatureField';
+
+// Componente auxiliar para o input de ficheiro
 const FileUploadField = ({ field, onChange }) => {
     const handleFileChange = (event) => {
-        // Pega no primeiro ficheiro selecionado pelo utilizador
         const file = event.target.files[0];
-        // Passa o objeto do ficheiro inteiro para a nossa função 'handleChange'
         onChange({ target: { name: field.label, value: file } });
     };
     return <input type="file" id={field.id} name={field.label} onChange={handleFileChange} required={field.required} />;
@@ -18,69 +21,111 @@ function SubmissionPage({ forms }) {
     const navigate = useNavigate();
     const form = forms.find(f => f.id == formId);
 
-    // Estado para guardar os dados do formulário (texto e ficheiros)
     const [formData, setFormData] = useState({});
-    // Estado para controlar o loading do botão de submissão
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const createInitialState = () => {
-        if (!form) return {};
-        const initialState = {};
-        form.fields.forEach(field => {
-            initialState[field.label] = '';
-        });
-        return initialState;
-    };
     
+    // Estados para o formulário de etapas
+    const [currentStep, setCurrentStep] = useState(0);
+    const [formErrors, setFormErrors] = useState({});
+
     useEffect(() => {
-        setFormData(createInitialState());
+        if (form) {
+            const initialState = {};
+            form.fields.forEach(field => {
+                initialState[field.label] = '';
+            });
+            setFormData(initialState);
+        }
     }, [form]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        setFormData(prevState => ({ ...prevState, [name]: value }));
+        if (formErrors[name]) {
+            setFormErrors(prevErrors => ({ ...prevErrors, [name]: null }));
+        }
     };
 
-    // A nossa função de submissão, agora muito mais poderosa
+     const handleCheckboxChange = (fieldName, optionLabel) => {
+        // Pega no array de respostas atual para este campo, ou cria um novo se não existir
+        const currentAnswers = formData[fieldName] || [];
+        let newAnswers;
+
+        if (currentAnswers.includes(optionLabel)) {
+            // Se a opção já estiver selecionada, remove-a (desmarcar)
+            newAnswers = currentAnswers.filter(answer => answer !== optionLabel);
+        } else {
+            // Se a opção não estiver selecionada, adiciona-a (marcar)
+            newAnswers = [...currentAnswers, optionLabel];
+        }
+
+        // Atualiza o estado com o novo array de respostas
+        setFormData(prevState => ({ ...prevState, [fieldName]: newAnswers }));
+    };
+    
+    // Funções de navegação para o formulário de etapas
+    const handleNext = () => {
+        const currentField = form.fields[currentStep];
+        if (currentField.required && !formData[currentField.label]) {
+            setFormErrors({ ...formErrors, [currentField.label]: 'Este campo é obrigatório.' });
+            return;
+        }
+        
+        if (currentStep < form.fields.length - 1) {
+            setCurrentStep(currentStep + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1);
+        }
+    };
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsSubmitting(true);
 
+        const lastField = form.fields[currentStep];
+        if (lastField.required && !formData[lastField.label]) {
+            setFormErrors({ ...formErrors, [lastField.label]: 'Este campo é obrigatório.' });
+            return;
+        }
+
+        setIsSubmitting(true);
+        
         try {
             const token = localStorage.getItem('japhub-token');
-            const dataPayload = { ...formData }; // Copia os dados do formulário
+            const dataPayload = { ...formData }; 
 
-            // Itera sobre os campos do formulário para encontrar os que são do tipo 'file'
             for (const field of form.fields) {
                 if (field.type === 'file' && dataPayload[field.label] instanceof File) {
                     const file = dataPayload[field.label];
                     
-                    // 1. Pede o "bilhete dourado" (URL de upload) ao nosso backend
                     const signedUrlResponse = await axios.post('http://localhost:8000/api/uploads/assinar-url', 
                         { fileName: file.name, fileType: file.type },
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                     const { signedUrl, path } = signedUrlResponse.data;
 
-                    // 2. Faz o upload do ficheiro diretamente do navegador para o Supabase Storage
                     await axios.put(signedUrl, file, {
                         headers: { 'Content-Type': file.type }
                     });
 
-                    // 3. Constrói o link público e permanente do ficheiro e substitui o objeto do ficheiro no nosso payload
                     const publicUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/upload-formularios/${path}`;
                     dataPayload[field.label] = publicUrl;
                 }
             }
 
-            // 4. Submete a resposta final para a nossa API, agora com os links dos ficheiros em vez dos ficheiros em si
-            await axios.post(`http://localhost:8000/api/formularios/${formId}/respostas`, { data: dataPayload });
+            // CORREÇÃO: Adicionamos o cabeçalho de autorização aqui
+            await axios.post(
+                `http://localhost:8000/api/formularios/${formId}/respostas`, 
+                { data: dataPayload },
+                { headers: { Authorization: `Bearer ${token}` } } 
+            );
 
             alert('Resposta enviada com sucesso!');
-            navigate(`/tabelas/${formId}`);
+            // Redireciona para o portal ou para o histórico após a submissão
+            navigate('/portal/minhas-submissoes');
 
         } catch (error) {
             console.error("Erro ao submeter resposta:", error);
@@ -91,56 +136,94 @@ function SubmissionPage({ forms }) {
     };
 
     if (!form) {
-        return (
-            <div className="submission-page-container">
-                <h1>Formulário não encontrado!</h1>
-            </div>
-        );
+        return <div className="submission-page-container"><h1>Formulário não encontrado!</h1></div>;
     }
 
+    const progress = ((currentStep + 1) / form.fields.length) * 100;
+    const currentField = form.fields[currentStep];
+    const isLastStep = currentStep === form.fields.length - 1;
+
     return (
-        <div className="submission-page-container">
-            <div className="form-submission-card">
+        <div className="submission-page-container card-form-mode">
+            <div className="form-submission-card card-step-card">
                 <header className="form-submission-header">
                     <h2>{form.name}</h2>
-                    <p>Preencha os campos abaixo. Campos com * são obrigatórios.</p>
+                    <div className="progress-bar-container">
+                        <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+                    </div>
                 </header>
 
-                <form className="submission-form" onSubmit={handleSubmit}>
-                    {form.fields.map(field => (
-                        <div key={field.id} className="form-group">
-                            <label htmlFor={field.id}>
-                                {field.label} 
-                                {field.required && <span style={{ color: 'red' }}>*</span>}
-                            </label>
-                            
-                            {(() => {
-                                switch (field.type) {
-                                    case 'file':
-                                        return <FileUploadField field={field} onChange={handleChange} />;
-                                    case 'textarea':
-                                        return <textarea id={field.id} name={field.label} value={formData[field.label] || ''} onChange={handleChange} required={field.required} className="field-input" />;
-                                    case 'radio':
-                                        return (
-                                            <div className="radio-options-container-submission">
-                                                {field.options.map(option => (
-                                                    <div key={option.id} className="radio-option-item-submission">
-                                                        <input type="radio" id={option.id} name={field.label} value={option.label} onChange={handleChange} required={field.required} />
-                                                        <label htmlFor={option.id}>{option.label}</label>
-                                                    </div>
-                                                ))}
+                <div className="submission-form-step">
+                    <div key={currentField.id} className="form-group animate-step">
+                        <label htmlFor={currentField.id}>
+                            {currentField.label} 
+                            {currentField.required && <span style={{ color: 'red' }}>*</span>}
+                        </label>
+                        
+                        {(() => {
+                            switch (currentField.type) {
+                                case 'file': return <FileUploadField field={currentField} onChange={handleChange} />;
+                                case 'textarea': return <textarea id={currentField.id} name={currentField.label} value={formData[currentField.label] || ''} onChange={handleChange} required={currentField.required} />;
+                                case 'signature': return <SignatureField field={currentField} onChange={handleChange} />;
+                                case 'radio': return (
+                                    <div className="radio-options-container"> 
+                                        {currentField.options.map(option => (
+                                            <div key={option.id} className="radio-option-item">
+                                                <input type="radio" id={option.id} name={currentField.label} value={option.label} checked={formData[currentField.label] === option.label} onChange={handleChange} required={currentField.required} />
+                                                <label htmlFor={option.id}>{option.label}</label>
                                             </div>
-                                        );
-                                    default:
-                                        return <input type={field.type} id={field.id} name={field.label} value={formData[field.label] || ''} onChange={handleChange} required={field.required} />;
-                                }
-                            })()}
-                        </div>
-                    ))}
-                    <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                        {isSubmitting ? 'A Enviar...' : 'Submeter'}
-                    </button>
-                </form>
+                                        ))}
+                                    </div>
+                                );
+
+                                case 'checkbox':
+                                    return (
+                                        <div className="radio-options-container">
+                                            {currentField.options.map(option => (
+                                                <div key={option.id} className="radio-option-item">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        id={option.id} 
+                                                        name={currentField.label} 
+                                                        value={option.label}
+                                                        // Verifica se a opção está no nosso array de respostas
+                                                        checked={(formData[currentField.label] || []).includes(option.label)}
+                                                        onChange={() => handleCheckboxChange(currentField.label, option.label)}
+                                                    />
+                                                    <label htmlFor={option.id}>{option.label}</label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    );
+                                    
+                                default: return <input type={currentField.type} id={currentField.id} name={currentField.label} value={formData[currentField.label] || ''} onChange={handleChange} required={currentField.required} />;
+                            }
+                        })()}
+                        {formErrors[currentField.label] && <p className="error-message">{formErrors[currentField.label]}</p>}
+                    </div>
+                </div>
+
+                <footer className="step-navigation">
+                    {currentStep > 0 && (
+                        <button type="button" className="nav-button prev-button" onClick={handlePrev}>
+                            <FontAwesomeIcon icon={faArrowLeft} />
+                            Anterior
+                        </button>
+                    )}
+                    
+                    {!isLastStep && (
+                        <button type="button" className="nav-button next-button" onClick={handleNext}>
+                            Próximo
+                            <FontAwesomeIcon icon={faArrowRight} />
+                        </button>
+                    )}
+                    
+                    {isLastStep && (
+                        <button onClick={handleSubmit} className="submit-btn" disabled={isSubmitting}>
+                            {isSubmitting ? 'A Enviar...' : 'Submeter'}
+                        </button>
+                    )}
+                </footer>
             </div>
         </div>
     );
